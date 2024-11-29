@@ -9,6 +9,7 @@ import PopularMovies from "./pages/PopularMovies";
 
 const App = () => {
   return (
+
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
@@ -19,6 +20,7 @@ const App = () => {
         <Route path="/movies/popular" element={<PopularMovies />} />
       </Routes>
     </Router>
+
   );
 };
 
