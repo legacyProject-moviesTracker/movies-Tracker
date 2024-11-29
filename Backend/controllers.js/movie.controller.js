@@ -1,6 +1,7 @@
 require('dotenv').config();
 const axios = require('axios');
 const Movie = require('../models/moviesModel');
+const User = require('../models/userModel');
 
 const apiURL = `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.API_KEY}&language=en-US&page=1`;
 
@@ -16,20 +17,34 @@ const getAllMovies = async (req, res) => {
 
 const addFavoriteMovie = async (req, res) => {
     try {
-        const { movieId, userId } = req.body;
+        const { apiId, userId } = req.body;
 
-        const existingMovie = await Movie.findOne({ movieId, userId });
+        // Check if the user exists
+        const userExists = await User.findById(userId);
+        if (!userExists) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Fetch the movie details from the external API
+        const movieDetails = await axios.get(`${apiURL}${apiId}?api_key=${process.env.API_KEY}&language=en-US`);
+
+        // Check if the movie already exists in the user's favorites
+        const existingMovie = await Movie.findOne({ apiId, userId });
         if (existingMovie) {
             return res.status(400).json({ message: "Movie is already in your favorites." });
         }
 
         // Create a new favorite movie entry
         const newMovie = new Movie({
-            movieId,
-            userId,
-            isFavorite: true,
+            title: movieDetails.data.title,        // Movie title from the API
+            genre: movieDetails.data.genres[0]?.name || "Unknown", // Use first genre or "Unknown"
+            releaseDate: movieDetails.data.release_date,
+            posterUrl: `https://image.tmdb.org/t/p/w500${movieDetails.data.poster_path}`, // Movie poster URL
+            apiId,  // API ID of the movie
+            userId, // User ID to link the movie with the user
         });
 
+        // Save the movie to the database
         await newMovie.save();
 
         res.status(201).json({ message: "Movie added to favorites successfully!", movie: newMovie });
@@ -38,6 +53,8 @@ const addFavoriteMovie = async (req, res) => {
         res.status(500).json({ message: "Error adding movie to favorites" });
     }
 };
+
+module.exports = { addFavoriteMovie };
 
 const updateFavoriteMovie = async (req, res) => {
     try {
