@@ -44,7 +44,42 @@ const loginUser = async (req, res) => {
     }
 }
 
+// Controller to get user's favorites with full movie details
+const getFavoritesWithDetails = async (req, res) => {
+    const { userId } = req.query; // Get user ID from query parameters
+
+    try {
+        // Find user by ID and get favoriteMovies
+        const user = await User.findById(_Id);
+
+        console.log(user);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const { favoriteMovies } = user; // Array of movie IDs (numbers)
+
+        if (!favoriteMovies || favoriteMovies.length === 0) {
+            return res.status(404).json({ message: 'No favorite movies found.' });
+        }
+
+        // Fetch details for each movie ID
+        const movieDetailsPromises = favoriteMovies.map((movieId) =>
+            fetchMovieDetailsFromTMDB(movieId)
+        );
+
+        const movieDetails = await Promise.all(movieDetailsPromises);
+
+        // Return combined details
+        res.json(movieDetails);
+    } catch (error) {
+        console.error('Error fetching favorite movies:', error);
+        res.status(500).json({ error: 'Failed to fetch favorite movies.' });
+    }
+};
+
 module.exports = {
     registerUser,
     loginUser,
+    getFavoritesWithDetails,
 };

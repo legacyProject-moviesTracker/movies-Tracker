@@ -25,8 +25,8 @@ const addFavoriteMovie = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        // Fetch the movie details from the external API
-        const movieDetails = await axios.get(`${apiURL}${apiId}?api_key=${process.env.API_KEY}&language=en-US`);
+        // Fetch the movie details from the external API using the apiId
+        const movieDetails = await axios.get(`https://api.themoviedb.org/3/movie/${apiId}?api_key=${process.env.API_KEY}&language=en-US`);
 
         // Check if the movie already exists in the user's favorites
         const existingMovie = await Movie.findOne({ apiId, userId });
@@ -36,7 +36,7 @@ const addFavoriteMovie = async (req, res) => {
 
         // Create a new favorite movie entry
         const newMovie = new Movie({
-            title: movieDetails.data.title,        // Movie title from the API
+            title: movieDetails.data.title,         // Movie title from the API
             genre: movieDetails.data.genres[0]?.name || "Unknown", // Use first genre or "Unknown"
             releaseDate: movieDetails.data.release_date,
             posterUrl: `https://image.tmdb.org/t/p/w500${movieDetails.data.poster_path}`, // Movie poster URL
@@ -46,6 +46,10 @@ const addFavoriteMovie = async (req, res) => {
 
         // Save the movie to the database
         await newMovie.save();
+
+        // Add the movie to the user's favorites list
+        userExists.favoriteMovies.push(newMovie._id);
+        await userExists.save();
 
         res.status(201).json({ message: "Movie added to favorites successfully!", movie: newMovie });
     } catch (error) {
@@ -59,19 +63,32 @@ module.exports = { addFavoriteMovie };
 const updateFavoriteMovie = async (req, res) => {
     try {
         const { id } = req.params;
-        const { isWatched, priority } = req.body;
+        const { apiId, userId } = req.body; // Expect new movie's apiId and userId
 
-        // Find the movie by ID
-        const movie = await Movie.findById(id);
+        // Check if the user exists
+        const userExists = await User.findById(userId);
+        if (!userExists) {
+            return res.status(404).json({ message: "User not found" });
+        }
 
+        // Find the existing movie by its ID (from the request params) and userId
+        const movie = await Movie.findOne({ apiId, userId });
+        
         if (!movie) {
             return res.status(404).json({ message: "Movie not found in your favorites." });
         }
 
-        // Update the movie properties
-        if (isWatched !== undefined) movie.isWatched = isWatched;
-        if (priority !== undefined) movie.priority = priority;
+        // Fetch new movie details from the external API
+        const movieDetails = await axios.get(`https://api.themoviedb.org/3/movie/${apiId}?api_key=${process.env.API_KEY}&language=en-US`);
 
+        // Replace the movie details with the new data
+        movie.title = movieDetails.data.title;
+        movie.genre = movieDetails.data.genres[0]?.name || "Unknown";
+        movie.releaseDate = movieDetails.data.release_date;
+        movie.posterUrl = `https://image.tmdb.org/t/p/w500${movieDetails.data.poster_path}`;
+        movie.apiId = apiId;  // Updating apiId, in case it's changed
+
+        // Save the updated movie
         await movie.save();
 
         res.status(200).json({ message: "Movie updated successfully!", movie });
@@ -80,6 +97,7 @@ const updateFavoriteMovie = async (req, res) => {
         res.status(500).json({ message: "Error updating movie" });
     }
 };
+
 
 const deleteFavoriteMovie = async (req, res) => {
     try {
