@@ -7,11 +7,34 @@ const apiURL = `https://api.themoviedb.org/3/movie/popular?api_key=${process.env
 
 const getAllMovies = async (req, res) => {
     try {
+        // Fetch the movies from the API
         const response = await axios.get(apiURL);
-        res.status(200).json(response.data);
+        
+        // Loop through the fetched movies and save each one to the database
+        for (const movieData of response.data.results) {
+            const { title, genre, release_date, poster_path, id } = movieData;
+
+            // Check if the movie already exists in the database (optional, to avoid duplicates)
+            const existingMovie = await Movie.findOne({ apiId: id });
+            if (!existingMovie) {
+                // Create a new movie entry and save it to the database
+                const newMovie = new Movie({
+                    title,
+                    genre: genre ? genre[0]?.name : 'Unknown', // Example for handling multiple genres
+                    releaseDate: release_date,
+                    posterUrl: `https://image.tmdb.org/t/p/w500${poster_path}`,
+                    apiId: id
+                });
+
+                await newMovie.save();
+            }
+        }
+
+        // Send the response to the user (optional)
+        res.status(200).json({ message: "Movies fetched and stored successfully!" });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Error fetching movies" });
+        res.status(500).json({ message: "Error fetching and storing movies" });
     }
 };
 
