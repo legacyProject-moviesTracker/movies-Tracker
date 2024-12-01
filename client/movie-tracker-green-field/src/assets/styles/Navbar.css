@@ -1,0 +1,171 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0d253f;
+  padding: 10px 20px;
+  color: white;
+}
+
+.navbar-logo {
+  font-size: 3rem; /* Increased font size for logo */
+  font-weight: bold;
+  cursor: pointer;
+  color: #01b4e4; /* Primary blue color for the logo */
+  transition: color 0.3s ease-in-out, transform 0.2s;
+}
+
+.navbar-logo:hover {
+  color: #0093c4; /* Slightly darker blue on hover */
+  transform: scale(1.1); /* Subtle zoom effect */
+}
+
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 40px; /* Increased spacing between links */
+}
+
+.navbar-links a,
+.navbar-links span {
+  position: relative;
+  text-decoration: none;
+  color: white;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 1rem; /* Increased font size for links */
+  transition: color 0.3s ease-in-out;
+}
+
+/* Hover underline effect for all links */
+.navbar-links a::before,
+.navbar-links span::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: #01b4e4;
+  transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+  transform: translateX(-50%);
+}
+
+.navbar-links a:hover::before,
+.navbar-links span:hover::before {
+  width: 100%;
+}
+
+.navbar-links a:hover,
+.navbar-links span:hover {
+  color: #01b4e4;
+}
+
+/* Special styling for the Home link */
+.navbar-links span:first-child {
+  font-size: 1.1rem; /* Slightly larger font for Home */
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(1, 180, 228, 0.5); /* Glow effect */
+  animation: glow-pulse 1.5s infinite; /* Pulsing animation for Home */
+}
+
+@keyframes glow-pulse {
+  0% {
+    text-shadow: 0 0 5px rgba(1, 180, 228, 0.5);
+  }
+  50% {
+    text-shadow: 0 0 15px rgba(1, 180, 228, 1);
+  }
+  100% {
+    text-shadow: 0 0 5px rgba(1, 180, 228, 0.5);
+  }
+}
+
+.navbar-links .dropdown {
+  position: relative;
+}
+
+.navbar-links .dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  color: black;
+  list-style: none;
+  padding: 10px 0;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  min-width: 150px;
+}
+
+.navbar-links .dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+.navbar-links .dropdown-menu li {
+  padding: 5px 20px;
+  font-size: 0.9rem;
+}
+
+.navbar-links .dropdown-menu li:hover {
+  background-color: #01b4e4;
+  color: white;
+}
+
+.navbar-links .dropdown-menu li a {
+  text-decoration: none;
+  color: black;
+  transition: color 0.3s ease-in-out;
+}
+
+.navbar-links .dropdown-menu li a:hover {
+  color: white;
+}
+
+/* Log Out button styling */
+button {
+  background: none;
+  border: none;
+  color: white;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s ease-in-out;
+}
+
+button::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: #01b4e4;
+  transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+  transform: translateX(-50%);
+}
+
+button:hover::before {
+  width: 100%;
+}
+
+button:hover {
+  color: #01b4e4;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .navbar-links {
+    flex-direction: column;
+    gap: 20px; /* Adjusted spacing for smaller screens */
+  }
+
+  .navbar-links a,
+  .navbar-links span {
+    font-size: 0.9rem; /* Slightly smaller font for links on mobile */
+  }
+}

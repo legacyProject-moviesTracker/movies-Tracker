@@ -1,16 +1,16 @@
 const express = require('express');
 const router = express.Router();
 
-const {
-    addComment,
-    updateComment,
-    deleteComment
-} = require('../controllers/comment.controller');
+const { 
+    createComment, 
+    updateComment, 
+    deleteComment,
+    getComments,
+} = require('../controllers.js/comments.controller');
 
-router.get('/movie/:movieId', getCommentsByMovie);
-router.get('/user/:userId', getCommentsByUser);
-router.post('/add', addComment);
-router.put('/update/:id', updateComment);
-router.delete('/delete/:id', deleteComment);
+router.get('/comments', getComments)
+router.post('/comments', createComment);
+router.put('/comments/:id', updateComment);
+router.delete('/comments/:id', deleteComment);
 
 module.exports = router;
