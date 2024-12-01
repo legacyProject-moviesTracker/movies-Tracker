@@ -5,25 +5,31 @@
   background-color: #0d253f;
   padding: 10px 20px;
   color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Logo styling */
 .navbar-logo {
-  font-size: 3rem; /* Increased font size for logo */
+  font-size: 3rem;
   font-weight: bold;
   cursor: pointer;
-  color: #01b4e4; /* Primary blue color for the logo */
+  color: #01b4e4;
   transition: color 0.3s ease-in-out, transform 0.2s;
 }
 
 .navbar-logo:hover {
-  color: #0093c4; /* Slightly darker blue on hover */
-  transform: scale(1.1); /* Subtle zoom effect */
+  color: #0093c4;
+  transform: scale(1.1);
 }
 
+/* Navbar Links */
 .navbar-links {
   list-style: none;
   display: flex;
-  gap: 40px; /* Increased spacing between links */
+  gap: 40px;
 }
 
 .navbar-links a,
@@ -33,7 +39,7 @@
   color: white;
   text-transform: uppercase;
   font-weight: 600;
-  font-size: 1rem; /* Increased font size for links */
+  font-size: 1rem;
   transition: color 0.3s ease-in-out;
 }
 
@@ -63,10 +69,10 @@
 
 /* Special styling for the Home link */
 .navbar-links span:first-child {
-  font-size: 1.1rem; /* Slightly larger font for Home */
+  font-size: 1.1rem;
   font-weight: 700;
-  text-shadow: 0 0 10px rgba(1, 180, 228, 0.5); /* Glow effect */
-  animation: glow-pulse 1.5s infinite; /* Pulsing animation for Home */
+  text-shadow: 0 0 10px rgba(1, 180, 228, 0.5);
+  animation: glow-pulse 1.5s infinite;
 }
 
 @keyframes glow-pulse {
@@ -81,6 +87,7 @@
   }
 }
 
+/* Dropdown menu styling */
 .navbar-links .dropdown {
   position: relative;
 }
@@ -158,14 +165,14 @@ button:hover {
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
+@media (max-width: 786px) {
   .navbar-links {
     flex-direction: column;
-    gap: 20px; /* Adjusted spacing for smaller screens */
+    gap: 20px;
   }
 
   .navbar-links a,
   .navbar-links span {
-    font-size: 0.9rem; /* Slightly smaller font for links on mobile */
+    font-size: 0.9rem;
   }
 }

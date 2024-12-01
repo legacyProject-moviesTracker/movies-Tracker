@@ -5,52 +5,45 @@ import SearchBar from "../components/SearchBar";
 import MovieList from "../components/MovieList";
 import MovieCarousel from "../components/MovieCarousel";
 import Footer from "../components/Footer";
-import { fetchMovies } from "../services/api";
+import { fetchMovies, searchMovies, fetchFreeToWatchMovies } from "../services/api";
 
 const Home = () => {
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [popularMovies, setPopularMovies] = useState([]);
-  const [carouselMovies, setCarouselMovies] = useState([]);
-  const [searchResults, setSearchResults] = useState([]); // Search results
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // Simulated login
-  const [username, setUsername] = useState("Niko Velakia"); // Simulated username
+  const [carouselMovies, setCarouselMovies] = useState([]); 
+  const [freeToWatchMovies, setFreeToWatchMovies] = useState([]); 
+  const [searchResults, setSearchResults] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [username, setUsername] = useState("Niko Velakia");
   const navigate = useNavigate();
 
   useEffect(() => {
     const loadMovies = async () => {
-      try {
-        const trending = await fetchMovies("trending/movie/day");
-        const popular = await fetchMovies("movie/popular");
-        const nowPlaying = await fetchMovies("movie/now_playing");
+      const trending = await fetchMovies("trending/movie/day");
+      const popular = await fetchMovies("movie/popular");
+      const freeToWatch = await fetchFreeToWatchMovies();
 
-        setTrendingMovies(trending);
-        setPopularMovies(popular);
-        setCarouselMovies(nowPlaying);
-      } catch (error) {
-        console.error("Error loading movies:", error);
-      }
+      setTrendingMovies(trending || []);
+      setPopularMovies(popular || []);
+      setCarouselMovies(trending || []); 
+      setFreeToWatchMovies(freeToWatch || []);
     };
 
     loadMovies();
   }, []);
 
-  const handleSearch = (query) => {
-    if (!query) {
-      setSearchResults([]); // Clear search results
-      return;
+  const handleSearch = async (query) => {
+    if (query.trim()) {
+      const results = await searchMovies(query);
+      setSearchResults(results || []);
+    } else {
+      setSearchResults([]);
     }
-
-    // Filter movies locally
-    const allMovies = [...trendingMovies, ...popularMovies];
-    const results = allMovies.filter((movie) =>
-      movie.title.toLowerCase().includes(query.toLowerCase())
-    );
-    setSearchResults(results);
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(false); // Simulate logging out
-    setUsername(""); // Clear username
+    setIsLoggedIn(false);
+    setUsername("");
   };
 
   return (
@@ -74,6 +67,11 @@ const Home = () => {
           <MovieList
             title="Popular Movies"
             movies={popularMovies}
+            onMovieClick={(movieId) => navigate(`/movie/${movieId}`)}
+          />
+          <MovieList
+            title="Free to Watch"
+            movies={freeToWatchMovies}
             onMovieClick={(movieId) => navigate(`/movie/${movieId}`)}
           />
         </>
