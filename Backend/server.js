@@ -4,6 +4,7 @@ const connection = require('./config/connection');
 require('dotenv').config();
 const userRoutes = require('./Routers/user.Router');
 const movieRoutes = require('./Routers/movies.Router');
+const commentsRoutes = require('./Routers/comments.Router');
 
 // initialize the app
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 
 app.use('/', userRoutes);
 app.use('/movies', movieRoutes);
+app.use('/', commentsRoutes);
 
 app.get("/", (req, res) => {
     res.send('Hello World!');

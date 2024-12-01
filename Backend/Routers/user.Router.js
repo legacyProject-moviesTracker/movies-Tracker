@@ -1,4 +1,5 @@
 const express = require('express');
+const router = express.Router();
 
 const {
     registerUser,
@@ -11,8 +12,6 @@ const {
     deleteWatchedMovie,
     createComments,
 } = require('../controllers.js/user.controller');
-
-const router = express.Router();
 
 router.get('/user/favorites/:id', getFavoritesWithDetails);
 router.get('/user/watchlist/:id', getWatchlist);

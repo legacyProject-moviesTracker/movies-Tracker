@@ -1,130 +1,72 @@
-const Comment = require('../models/commentModel');
+const Comment = require('../models/commentsModel');
 const MovieUser = require('../models/userModel');
-const Movie = require('../models/movieModel');
+const Movie = require('../models/moviesModel');
+require('dotenv').config();
+const axios = require('axios');
 
-// Get all comments by a specific user
-const getCommentsByUser = async (req, res) => {
+const createComment = async (req, res) => {
+    const { userId, movieId, commentText } = req.body;
+    
     try {
-        const { userId } = req.params;
-
-        // Find all comments related to the userId
-        const comments = await Comment.find({ userId });
-
-        if (comments.length === 0) {
-            return res.status(404).json({ message: "No comments found for this user" });
-        }
-
-        res.status(200).json(comments);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Error fetching comments" });
-    }
-};
-
-// Get all comments for a specific movie
-const getCommentsByMovie = async (req, res) => {
-    try {
-        const { movieId } = req.params;
-
-        // Find all comments related to the movieId
-        const comments = await Comment.find({ movieId });
-
-        if (comments.length === 0) {
-            return res.status(404).json({ message: "No comments found for this movie" });
-        }
-
-        res.status(200).json(comments);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Error fetching comments" });
-    }
-};
-
-// Add a new comment
-const addComment = async (req, res) => {
-    try {
-        const { userId, movieId, commentText } = req.body;
-
-        // Check if the user and movie exist
-        const user = await MovieUser.findById(userId);
-        const movie = await Movie.findById(movieId);
-
-        if (!user || !movie) {
-            return res.status(404).json({ message: "User or Movie not found" });
-        }
-
-        // Create a new comment
         const newComment = new Comment({
             userId,
             movieId,
             commentText
         });
 
-        // Save the comment to the database
         await newComment.save();
-
-        res.status(201).json({
-            message: 'Comment added successfully!',
-            comment: newComment
-        });
+        res.status(201).json({ message: 'Comment added successfully!' });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Error adding comment" });
+        console.error('Error adding comment:', error);
+        res.status(500).json({ error: 'Failed to add comment.' });
     }
 };
 
-// Update an existing comment
 const updateComment = async (req, res) => {
+    const { id } = req.params; // Get the comment ID from the URL parameter
+    const { commentText } = req.body; // Get the updated comment text from the request body
+
     try {
-        const { id } = req.params;
-        const { commentText } = req.body;
+        // Find the comment by its ID
+        const comment = await Comment.findById(id);
 
-        // Find the comment by ID and update it
-        const updatedComment = await Comment.findByIdAndUpdate(
-            id,
-            { commentText },
-            { new: true }
-        );
-
-        if (!updatedComment) {
-            return res.status(404).json({ message: "Comment not found" });
+        if (!comment) {
+            return res.status(404).json({ message: 'Comment not found' });
         }
 
-        res.status(200).json({
-            message: 'Comment updated successfully!',
-            comment: updatedComment
-        });
+        // Update the comment text
+        comment.commentText = commentText || comment.commentText;
+
+        // Save the updated comment
+        await comment.save();
+
+        res.status(200).json({ message: 'Comment updated successfully!', comment });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Error updating comment" });
+        console.error('Error updating comment:', error);
+        res.status(500).json({ error: 'Failed to update comment.' });
     }
 };
 
-// Delete a comment
 const deleteComment = async (req, res) => {
+    const { id } = req.params; // Get the comment ID from the URL parameter
+
     try {
-        const { id } = req.params;
+        // Find the comment by its ID and delete it
+        const comment = await Comment.findByIdAndDelete(id);
 
-        // Find the comment by ID and delete it
-        const deletedComment = await Comment.findByIdAndDelete(id);
-
-        if (!deletedComment) {
-            return res.status(404).json({ message: "Comment not found" });
+        if (!comment) {
+            return res.status(404).json({ message: 'Comment not found' });
         }
 
-        res.status(200).json({
-            message: 'Comment deleted successfully!'
-        });
+        res.status(200).json({ message: 'Comment deleted successfully' });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Error deleting comment" });
+        console.error('Error deleting comment:', error);
+        res.status(500).json({ error: 'Failed to delete comment.' });
     }
 };
 
 module.exports = {
-    addComment,
+    createComment,
     updateComment,
     deleteComment,
-    getCommentsByUser,
-    getCommentsByMovie
-};
+}
