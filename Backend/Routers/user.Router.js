@@ -10,7 +10,6 @@ const {
     getWatchlist,
     deleteFavorite,
     deleteWatchedMovie,
-    createComments,
 } = require('../controllers.js/user.controller');
 
 router.get('/user/favorites/:id', getFavoritesWithDetails);
@@ -21,6 +20,5 @@ router.post('/user/favorites', addFavoriteMovie);
 router.post('/user/watchlist', addToWatchlist);
 router.delete('/user/favorite', deleteFavorite);
 router.delete('/user/watchlist', deleteWatchedMovie);
-router.post('/user/comments', createComments);
 
 module.exports = router;

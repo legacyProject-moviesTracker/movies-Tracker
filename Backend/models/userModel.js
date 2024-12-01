@@ -6,7 +6,6 @@ const userSchema = new mongoose.Schema({
     password: {type: String, required: true},
     favoriteMovies: [{type: mongoose.Schema.Types.ObjectId, ref: 'Movie'}],
     watchedMovies: [{type: mongoose.Schema.Types.ObjectId, ref: 'Movie'}],
-    prioritylist: [{type: mongoose.Schema.Types.ObjectId, ref: 'Movie'}],
 });
 
 const User = mongoose.model('User', userSchema);

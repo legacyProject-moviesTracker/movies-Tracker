@@ -65,8 +65,19 @@ const deleteComment = async (req, res) => {
     }
 };
 
+const getComments = async (req, res) => {
+    try {
+        const comments = await Comment.find();
+        res.status(200).json(comments);
+    } catch (error) {
+        console.error('Error fetching comments:', error);
+        res.status(500).json({ error: 'Failed to fetch comments.' });
+    }
+};
+
 module.exports = {
     createComment,
     updateComment,
     deleteComment,
+    getComments,
 }

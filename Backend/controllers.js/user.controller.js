@@ -204,9 +204,7 @@ const deleteWatchedMovie = async (req, res) => {
     }
 };
 
-const createComments = async (req, res) => {
-    
-}
+
 
 module.exports = {
     registerUser,
@@ -217,5 +215,4 @@ module.exports = {
     getWatchlist,
     deleteFavorite,
     deleteWatchedMovie,
-    createComments,
 };
