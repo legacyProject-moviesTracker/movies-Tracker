@@ -9,6 +9,11 @@ import PopularMovies from "./pages/PopularMovies";
 
 const App = () => {
   return (
+<<<<<<< HEAD
+    <div className="App">
+      <p>Hello World test</p>
+    </div>
+=======
 
     <Router>
       <Routes>
@@ -21,6 +26,7 @@ const App = () => {
       </Routes>
     </Router>
 
+>>>>>>> f19478f85b6eb56e269ccb59893252122e216871
   );
 };
 
