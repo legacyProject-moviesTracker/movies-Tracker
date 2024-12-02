@@ -3,12 +3,14 @@ import MovieCard from "./MovieCard";
 import "../assets/styles/MovieList.css";
 
 const MovieList = ({ title, movies = [], onMovieClick }) => {
+  const validMovies = Array.isArray(movies) ? movies : [];
+
   return (
     <div className="movie-list">
       <h2 className="movie-list-title">{title}</h2>
-      {movies.length > 0 ? (
+      {validMovies.length > 0 ? (
         <div className="movie-list-container">
-          {movies.map((movie) => (
+          {validMovies.map((movie) => (
             <MovieCard
               key={movie.id}
               movie={movie}
