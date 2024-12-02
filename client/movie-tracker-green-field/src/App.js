@@ -10,6 +10,7 @@ const Profile = () => <h1>Your Profile Page</h1>;
 
 const App = () => {
   return (
+
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
@@ -20,6 +21,7 @@ const App = () => {
         <Route path="/profile" element={<Profile />} /> {/* Profile page */}
       </Routes>
     </Router>
+
   );
 };
 

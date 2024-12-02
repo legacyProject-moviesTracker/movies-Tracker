@@ -1,22 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { fetchMovieDetails, fetchMovieCast } from "../services/api";
-import "../assets/styles/MovieDetails.css"; 
+import { fetchMovieDetails, fetchMovieCast, fetchRelatedMovies } from "../services/api";
+import "../assets/styles/MovieDetails.css";
 
-const MovieDetails = () => {
-  const { movieId } = useParams(); 
+const MovieDetails = ({ user }) => {
+  const { movieId } = useParams();
+  const navigate = useNavigate();
   const [movie, setMovie] = useState(null);
   const [cast, setCast] = useState([]);
+  const [relatedMovies, setRelatedMovies] = useState([]);
   const [trailerKey, setTrailerKey] = useState("");
 
   useEffect(() => {
     const loadMovieDetails = async () => {
-      const movieData = await fetchMovieDetails(movieId); 
-      const movieCast = await fetchMovieCast(movieId); 
+      const movieData = await fetchMovieDetails(movieId);
+      const movieCast = await fetchMovieCast(movieId);
+      const related = await fetchRelatedMovies(movieId);
       setMovie(movieData);
       setCast(movieCast);
+      setRelatedMovies(related);
 
       // Fetch YouTube trailer
       const trailerResponse = await fetch(
@@ -34,6 +38,24 @@ const MovieDetails = () => {
     loadMovieDetails();
   }, [movieId]);
 
+  const handleAddToFavorites = async () => {
+    if (!user) {
+      alert("Please log in to add movies to your favorites.");
+      return;
+    }
+
+    try {
+      // Replace with the actual API call to add to favorites
+      alert("Movie added to favorites!");
+    } catch (error) {
+      alert("An error occurred. Please try again.");
+    }
+  };
+
+  const handleRelatedMovieClick = (relatedMovieId) => {
+    navigate(`/movie/${relatedMovieId}`);
+  };
+
   if (!movie) return <p>Loading...</p>;
 
   return (
@@ -42,7 +64,7 @@ const MovieDetails = () => {
       <div
         className="movie-details-container"
         style={{
-          backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.posterUrl})`, 
+          backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.posterUrl})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           color: "white",
@@ -57,11 +79,41 @@ const MovieDetails = () => {
               {movie.title} ({movie.releaseDate.split("-")[0]})
             </h1>
             <p className="movie-genres">{movie.genre}</p>
-            <p className="movie-rating">
-              <span className="rating-circle">{movie.rating}%</span> User Score
-            </p>
+            <div className="movie-action-bar">
+              <p className="movie-rating">
+                <span className="rating-circle">{movie.rating}%</span> User Score
+              </p>
+              <button
+                className="add-to-favorites-btn"
+                onClick={handleAddToFavorites}
+              >
+                Add to Favorites
+              </button>
+            </div>
             <p className="movie-overview">{movie.overview}</p>
           </div>
+        </div>
+
+        {/* Related Movies Section */}
+        <div className="related-movies-container">
+          <h3 className="related-movies-title">Related Movies</h3>
+          <ul className="related-movies-list">
+            {relatedMovies.map((related) => (
+              <li
+                key={related.id}
+                className="related-movies-item"
+                onClick={() => handleRelatedMovieClick(related.id)}
+                style={{ cursor: "pointer" }}
+              >
+                <img
+                  src={`https://image.tmdb.org/t/p/w200${related.posterUrl}`}
+                  alt={related.title}
+                  className="related-movies-thumbnail"
+                />
+                <span className="related-movies-title-text">{related.title}</span>
+              </li>
+            ))}
+          </ul>
         </div>
 
         {/* Cast Section */}
