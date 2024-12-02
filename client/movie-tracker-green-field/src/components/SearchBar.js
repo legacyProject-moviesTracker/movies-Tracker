@@ -6,7 +6,15 @@ const SearchBar = ({ onSearch }) => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (onSearch) onSearch(query);
+    if (query.trim() && onSearch) {
+      onSearch(query); // Trigger the search only if there's a query
+    }
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter" && query.trim()) {
+      handleSearch(event); // Handle "Enter" key for searching
+    }
   };
 
   return (
@@ -17,6 +25,7 @@ const SearchBar = ({ onSearch }) => {
           placeholder="Search for movies, series, or people..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
         <button type="submit" className="button-21">
           Search
