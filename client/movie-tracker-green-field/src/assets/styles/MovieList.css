@@ -1,23 +1,26 @@
 .movie-list-container {
   display: flex;
-  overflow-x: auto;
-  gap: 20px; /* Adjust spacing between cards */
+  gap: 20px;
   padding: 15px 0;
   align-items: flex-start;
   scroll-behavior: smooth;
+  overflow-x: auto;
+  width: 80%;
+  margin: 0 auto;
+  position: relative;
 }
 
 .movie-list-container > * {
-  flex-shrink: 0; /* Prevent cards from shrinking */
+  flex-shrink: 0;
+  width: 200px;
 }
 
-
 .movie-list-container::-webkit-scrollbar {
-  height: 8px; /* Scrollbar height */
+  height: 8px;
 }
 
 .movie-list-container::-webkit-scrollbar-thumb {
-  background-color: #01b4e4; /* Scrollbar color */
+  background-color: #01b4e4;
   border-radius: 4px;
 }
 
@@ -25,9 +28,70 @@
   background-color: #f1f1f1;
 }
 
+/* Blur effect on the right side */
+.movie-list-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 100px;
+  pointer-events: none;
+  background: linear-gradient(
+    to left,
+    rgba(255, 255, 255, 1),
+    rgba(255, 255, 255, 0)
+  );
+  z-index: 2;
+}
+
 .movie-list-title {
-  font-size: 1.8rem;
-  font-weight: bold;
-  margin: 20px 10px 10px 10px;
-  color: #0d253f;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #01b4e4;
+  text-align: center;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+/* Underline animation effect */
+.movie-list-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background: #01b4e4;
+  transition: width 0.5s ease, left 0.5s ease;
+}
+
+.movie-list-title:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+/* Glow effect */
+.movie-list-title {
+  text-shadow: 0 0 5px rgba(1, 180, 228, 0.5), 0 0 10px rgba(1, 180, 228, 0.4),
+    0 0 15px rgba(1, 180, 228, 0.3);
+}
+
+/* Floating text effect */
+.movie-list-title span {
+  display: inline-block;
+  position: relative;
+  animation: float 2s infinite ease-in-out;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }

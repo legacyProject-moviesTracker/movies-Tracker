@@ -1,11 +1,17 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../assets/styles/Navbar.css";
 
 const Navbar = ({ isLoggedIn, username, onLogout }) => {
+  const navigate = useNavigate();
+
   const handleHomeClick = () => {
-    // Use window.location to force a page reload
-    window.location.href = "/";
+    navigate("/", { replace: true });
+    window.location.reload(); // Refresh the page
+  };
+
+  const handleProfileClick = () => {
+    navigate("/profile"); // Navigate to the profile page
   };
 
   return (
@@ -27,9 +33,6 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
           <span>Movies</span>
           <ul className="dropdown-menu">
             <li>
-              <Link to="/movies/now-playing">Playing Now</Link>
-            </li>
-            <li>
               <Link to="/movies/top-rated">Top Rated</Link>
             </li>
             <li>
@@ -42,7 +45,18 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
         </li>
         {isLoggedIn && (
           <li>
-            <span>Welcome, {username}</span>
+            {/* Link to profile page */}
+            <span
+              onClick={handleProfileClick}
+              style={{
+                cursor: "pointer",
+                color: "#01b4e4",
+                fontWeight: "bold",
+                textDecoration: "underline",
+              }}
+            >
+              Your Profile
+            </span>
           </li>
         )}
         {isLoggedIn ? (
