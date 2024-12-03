@@ -209,12 +209,14 @@
 }
 
 
+/* Trailer Section */
 .trailer-video {
   max-width: 800px;
   margin: 0 auto;
   border-radius: 10px;
   overflow: hidden;
 }
+
 
 .add-to-favorites-btn {
   background-color: #01b4e4;
@@ -317,3 +319,4 @@
   color: rgb(194, 72, 34);
   font-weight: bold;
 }
+

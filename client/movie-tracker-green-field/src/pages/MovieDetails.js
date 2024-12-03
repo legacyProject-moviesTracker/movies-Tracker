@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+
 import { fetchMovieDetails, fetchMovieCast, fetchRelatedMovies } from "../services/api";
 import "../assets/styles/MovieDetails.css";
 
@@ -11,16 +12,27 @@ const MovieDetails = ({ user }) => {
   const [movie, setMovie] = useState(null);
   const [cast, setCast] = useState([]);
   const [relatedMovies, setRelatedMovies] = useState([]);
+
+import { fetchMovieDetails, fetchMovieCast } from "../services/api";
+import "../assets/styles/MovieDetails.css"; 
+
+const MovieDetails = () => {
+  const { movieId } = useParams(); 
+  const [movie, setMovie] = useState(null);
+  const [cast, setCast] = useState([]);
   const [trailerKey, setTrailerKey] = useState("");
 
   useEffect(() => {
     const loadMovieDetails = async () => {
+
       const movieData = await fetchMovieDetails(movieId);
       const movieCast = await fetchMovieCast(movieId);
       const related = await fetchRelatedMovies(movieId);
       setMovie(movieData);
       setCast(movieCast);
       setRelatedMovies(related);
+
+
 
       // Fetch YouTube trailer
       const trailerResponse = await fetch(
@@ -64,7 +76,9 @@ const MovieDetails = ({ user }) => {
       <div
         className="movie-details-container"
         style={{
-          backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.posterUrl})`,
+
+          backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.posterUrl})`, 
+
           backgroundSize: "cover",
           backgroundPosition: "center",
           color: "white",
@@ -79,6 +93,7 @@ const MovieDetails = ({ user }) => {
               {movie.title} ({movie.releaseDate.split("-")[0]})
             </h1>
             <p className="movie-genres">{movie.genre}</p>
+
             <div className="movie-action-bar">
               <p className="movie-rating">
                 <span className="rating-circle">{movie.rating}%</span> User Score
@@ -90,9 +105,15 @@ const MovieDetails = ({ user }) => {
                 Add to Favorites
               </button>
             </div>
+
+            <p className="movie-rating">
+              <span className="rating-circle">{movie.rating}%</span> User Score
+            </p>
+
             <p className="movie-overview">{movie.overview}</p>
           </div>
         </div>
+
 
         {/* Related Movies Section */}
         <div className="related-movies-container">
@@ -115,6 +136,7 @@ const MovieDetails = ({ user }) => {
             ))}
           </ul>
         </div>
+
 
         {/* Cast Section */}
         <div className="movie-cast-section">
