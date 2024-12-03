@@ -10,6 +10,7 @@ export const fetchMovies = async (endpoint) => {
   try {
     const response = await fetch(`${BASE_URL}/${endpoint}?api_key=${API_KEY}`);
     const data = await response.json();
+
     return data.results || []; 
   } catch (error) {
     console.error("Error fetching movies:", error);
@@ -27,6 +28,7 @@ export const fetchFreeToWatchMovies = async () => {
       `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_watch_monetization_types=free`
     );
     const data = await response.json();
+
     return data.results || []; 
   } catch (error) {
     console.error("Error fetching free-to-watch movies:", error);
@@ -47,7 +49,9 @@ export const fetchMovieDetails = async (movieId) => {
       title: data.title,
       releaseDate: data.release_date,
       genre: data.genres.map((g) => g.name).join(", "),
+
       rating: Math.round(data.vote_average * 10), 
+
       overview: data.overview,
       posterUrl: `https://image.tmdb.org/t/p/w500${data.poster_path}`,
     };
@@ -72,7 +76,9 @@ export const fetchMovieCast = async (movieId) => {
       character: member.character,
       profileUrl: member.profile_path
         ? `https://image.tmdb.org/t/p/w200${member.profile_path}`
+
         : "https://via.placeholder.com/150", 
+
     }));
   } catch (error) {
     console.error("Error fetching movie cast:", error);
@@ -88,7 +94,9 @@ export const fetchGenres = async () => {
   try {
     const response = await fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}`);
     const data = await response.json();
+
     return data.genres || []; 
+
   } catch (error) {
     console.error("Error fetching genres:", error);
     return [];
@@ -106,9 +114,34 @@ export const searchMovies = async (query) => {
       `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`
     );
     const data = await response.json();
+
     return data.results || []; 
+
   } catch (error) {
     console.error("Error searching movies:", error);
     return [];
   }
 };
+
+/**
+ * Fetch related movies for a specific movie.
+ * @param {number} movieId - The ID of the movie to fetch related movies for.
+ * @returns {Promise<Array>} - A promise that resolves to an array of related movies.
+ */
+export const fetchRelatedMovies = async (movieId) => {
+  try {
+    const response = await fetch(
+      `${BASE_URL}/movie/${movieId}/similar?api_key=${API_KEY}`
+    );
+    const data = await response.json();
+    return data.results.map((movie) => ({
+      id: movie.id,
+      title: movie.title,
+      posterUrl: `https://image.tmdb.org/t/p/w200${movie.poster_path}`,
+    }));
+  } catch (error) {
+    console.error("Error fetching related movies:", error);
+    return [];
+  }
+};
+
