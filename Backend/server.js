@@ -1,5 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const connection = require('./config/connection');
 require('dotenv').config();
@@ -64,8 +65,17 @@ app.post('/login', async (req, res) => {
     if(!isPasswordCorrect) {
         return res.send({msg: "incorrect password"});
     }
-    // Return Token
-    return res.send({msg: "Logged in successfully"});
+
+    // Return Token (payload, secretkey)
+
+    // Generate the Token
+    let payload = {
+        userId: registeredUser._id,
+        email: registeredUser.email,
+    }
+    let token = jwt.sign(payload, "supersecretawesomness");
+
+    return res.send({msg: "Logged in successfully", token});
     } catch (error) {
         return res.status(500).send({msg: "Internal server error"});
     }
