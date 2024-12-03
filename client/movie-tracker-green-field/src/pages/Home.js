@@ -14,7 +14,7 @@ const Home = () => {
   const [freeToWatchMovies, setFreeToWatchMovies] = useState([]); 
   const [searchResults, setSearchResults] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [username, setUsername] = useState("Niko Velakia");
+  const [username, setUsername] = useState("My Profile");
   const navigate = useNavigate();
 
   useEffect(() => {

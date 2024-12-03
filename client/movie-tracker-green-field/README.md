@@ -1,70 +1,88 @@
-# Getting Started with Create React App
+<h1>Movie Tracker🍿🎥</h1>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<h3>1. Project’s Title:</h3>
+   Movie Tracker - A web application designed to help users explore, track, and save their favorite movies while providing an engaging user experience with trailers, cast information, and more.
 
-## Available Scripts
 
-In the project directory, you can run:
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+<h2>2. Overview </h2>
+   Movie Tracker is a dynamic web application that allows users to
+Browse movies.
+View detailed information like trailers, cast, and ratings.
+Save and manage a personalized list of favorite movies.
 
-### `npm test`
+<br>Key Features:<br>
+View movie details: genres, ratings, and cast.
+Watch trailers directly on the movie’s page.
+Add movies to a personal favorites list.
+Explore related movie recommendations.
+Responsive design for mobile and desktop.<br>
+<br>Technologies
+Frontend:<br> React, React Router DOM, CSS.
+Backend: Node.js, Express.js, MongoDB, Mongoose.
+Authentication: JSON Web Tokens (JWT).
+External API: The Movie Database (TMDb).<br>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Challenges Faced:<br>
+Efficient integration of the TMDb API for dynamic movie data.
+Ensuring seamless user authentication and secure token management.
+Making the application responsive across devices.<br>
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+<br>Future Enhancements:<br>
+User profile pages to manage watchlists and favorites.
+A recommendation engine based on user activity.
+Improved watchlist functionality, including reminders. 
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+<h2>3. Description</h2>
+What Does Movie Tracker Do?<br>
+Movie Tracker simplifies the movie-browsing experience by integrating:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Detailed information about movies.
+A personal favorites list for quick access.
+Recommendations for related movies.
+Screenshots,
+Homepage,
+Movie Details.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+<h2>4. Installation</h2>
+  
+   <img src="./src/assets/screenshots/step5.png" alt="Description" width="600"><br>
+   <img src="./src/assets/screenshots/step5a.png" alt="Description" width="600">
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Learn More
+<h2>5. How to Use the Project</h2>
+Homepage:
+Browse the latest and top-rated movies.<br>
+Search for movies using the search bar.<br>
+Movie Details Page:
+View trailers, cast, and detailed information.<br>
+Save the movie to your favorites list.<br>
+Favorites:
+Keep track of your saved movies. 
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+<h2>6. Credits</h2>
+Team Members:<br>
+Aristeidis Amasalidis<br>
+Yiannis Kalogiannis<br>
+Nikos Protonotarios<br>
+Resources:
+TMDb API.
+React Documentation.
+MongoDB Documentation. 8. License
+This project is licensed under the MIT License. See the LICENSE file for details.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+<h2>7. How to Contribute to the Project</h2>
+<img src="./src/assets/screenshots/step10.png" alt="Description" width="600">
 
-### Analyzing the Bundle Size
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+<h2>8. Include Tests</h2>
+<img src="./src/assets/screenshots/step11.png" alt="Description" width="600">
+<h1>Let us know if you have any questions! 🚀</h1>

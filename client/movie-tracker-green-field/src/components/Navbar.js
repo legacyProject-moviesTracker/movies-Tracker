@@ -11,20 +11,24 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
   };
 
   const handleProfileClick = () => {
-    navigate("/profile"); // Navigate to the profile page
+    navigate("/userpage"); // Navigate to the user page
+  };
+
+  const handleLogout = () => {
+    onLogout(); // Call the logout function
+    localStorage.removeItem("token"); // Clear the token from storage
+    navigate("/login"); // Redirect to login page
   };
 
   return (
     <nav className="navbar">
       <div className="navbar-logo">
-        {/* Trigger home navigation and refresh when clicking on the logo */}
         <span onClick={handleHomeClick} style={{ cursor: "pointer" }}>
           MovieTracker
         </span>
       </div>
       <ul className="navbar-links">
         <li>
-          {/* Trigger home navigation and refresh when clicking on the Home link */}
           <span onClick={handleHomeClick} style={{ cursor: "pointer" }}>
             Home
           </span>
@@ -45,7 +49,6 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
         </li>
         {isLoggedIn && (
           <li>
-            {/* Link to profile page */}
             <span
               onClick={handleProfileClick}
               style={{
@@ -55,17 +58,19 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
                 textDecoration: "underline",
               }}
             >
-              Your Profile
+              {username || "Your Profile"}
             </span>
           </li>
         )}
         {isLoggedIn ? (
           <li>
-            <button onClick={onLogout}>Log Out</button>
+            <button onClick={handleLogout} className="logout-btn">
+              Log Out
+            </button>
           </li>
         ) : (
           <li>
-            <Link to="/login">Login</Link>
+            <Link to="/login">Log out</Link>
           </li>
         )}
       </ul>

@@ -1,0 +1,43 @@
+/* Container for the profile page */
+.profile-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* Welcome message styling */
+  .welcome-message {
+    text-align: center;
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  /* Layout for profile content */
+  .profile-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  /* Favorites Section */
+  .favorites-section,
+  .comments-section {
+    flex: 1 1 45%;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    max-height: 500px;
+  }
+  
+  /* Section titles */
+  .favorites-section h2,
+  .comments-section h2 {
+    margin-top: 0;
+    text-align: center;
+    color: #0d253f;
+  }
+  

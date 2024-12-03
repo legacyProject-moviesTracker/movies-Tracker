@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-
-import { fetchMovieDetails, fetchMovieCast, fetchRelatedMovies } from "../services/api";
+import {
+  fetchMovieDetails,
+  fetchMovieCast,
+  fetchRelatedMovies,
+} from "../services/api";
 import "../assets/styles/MovieDetails.css";
 
 const MovieDetails = ({ user }) => {
@@ -12,38 +15,33 @@ const MovieDetails = ({ user }) => {
   const [movie, setMovie] = useState(null);
   const [cast, setCast] = useState([]);
   const [relatedMovies, setRelatedMovies] = useState([]);
-
-import { fetchMovieDetails, fetchMovieCast } from "../services/api";
-import "../assets/styles/MovieDetails.css"; 
-
-const MovieDetails = () => {
-  const { movieId } = useParams(); 
-  const [movie, setMovie] = useState(null);
-  const [cast, setCast] = useState([]);
   const [trailerKey, setTrailerKey] = useState("");
+  const [message, setMessage] = useState(""); // For displaying success/error messages
 
   useEffect(() => {
     const loadMovieDetails = async () => {
+      try {
+        const movieData = await fetchMovieDetails(movieId);
+        const movieCast = await fetchMovieCast(movieId);
+        const related = await fetchRelatedMovies(movieId);
 
-      const movieData = await fetchMovieDetails(movieId);
-      const movieCast = await fetchMovieCast(movieId);
-      const related = await fetchRelatedMovies(movieId);
-      setMovie(movieData);
-      setCast(movieCast);
-      setRelatedMovies(related);
+        setMovie(movieData);
+        setCast(movieCast);
+        setRelatedMovies(related);
 
-
-
-      // Fetch YouTube trailer
-      const trailerResponse = await fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=1d96b86ca67b80b6ffe19947686664ef`
-      );
-      const trailerData = await trailerResponse.json();
-      const trailer = trailerData.results.find(
-        (video) => video.type === "Trailer" && video.site === "YouTube"
-      );
-      if (trailer) {
-        setTrailerKey(trailer.key);
+        // Fetch YouTube trailer
+        const trailerResponse = await fetch(
+          `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=1d96b86ca67b80b6ffe19947686664ef`
+        );
+        const trailerData = await trailerResponse.json();
+        const trailer = trailerData.results.find(
+          (video) => video.type === "Trailer" && video.site === "YouTube"
+        );
+        if (trailer) {
+          setTrailerKey(trailer.key);
+        }
+      } catch (error) {
+        console.error("Error loading movie details:", error);
       }
     };
 
@@ -51,16 +49,30 @@ const MovieDetails = () => {
   }, [movieId]);
 
   const handleAddToFavorites = async () => {
-    if (!user) {
-      alert("Please log in to add movies to your favorites.");
-      return;
-    }
-
     try {
-      // Replace with the actual API call to add to favorites
-      alert("Movie added to favorites!");
+      const response = await fetch(`/user/favorites`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify({
+          userId: user.userId,
+          movieId: movieId,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error adding to favorites:", errorData.message);
+        setMessage(errorData.message || "Failed to add movie to favorites.");
+        return;
+      }
+
+      setMessage("Movie added to favorites!");
     } catch (error) {
-      alert("An error occurred. Please try again.");
+      console.error("Error adding movie to favorites:", error);
+      setMessage("An error occurred. Please try again.");
     }
   };
 
@@ -76,9 +88,7 @@ const MovieDetails = () => {
       <div
         className="movie-details-container"
         style={{
-
-          backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.posterUrl})`, 
-
+          backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.posterUrl})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           color: "white",
@@ -93,10 +103,10 @@ const MovieDetails = () => {
               {movie.title} ({movie.releaseDate.split("-")[0]})
             </h1>
             <p className="movie-genres">{movie.genre}</p>
-
             <div className="movie-action-bar">
               <p className="movie-rating">
-                <span className="rating-circle">{movie.rating}%</span> User Score
+                <span className="rating-circle">{movie.rating}%</span> User
+                Score
               </p>
               <button
                 className="add-to-favorites-btn"
@@ -105,15 +115,10 @@ const MovieDetails = () => {
                 Add to Favorites
               </button>
             </div>
-
-            <p className="movie-rating">
-              <span className="rating-circle">{movie.rating}%</span> User Score
-            </p>
-
             <p className="movie-overview">{movie.overview}</p>
+            {message && <p className="favorite-message">{message}</p>}
           </div>
         </div>
-
 
         {/* Related Movies Section */}
         <div className="related-movies-container">
@@ -131,12 +136,13 @@ const MovieDetails = () => {
                   alt={related.title}
                   className="related-movies-thumbnail"
                 />
-                <span className="related-movies-title-text">{related.title}</span>
+                <span className="related-movies-title-text">
+                  {related.title}
+                </span>
               </li>
             ))}
           </ul>
         </div>
-
 
         {/* Cast Section */}
         <div className="movie-cast-section">
@@ -168,7 +174,7 @@ const MovieDetails = () => {
               <iframe
                 width="100%"
                 height="400"
-                src={`https://www.youtube.com/embed/${trailerKey}`}
+                src={`https://www.youtube.com/embed/${trailerKey}?enablejsapi=1`}
                 title={`${movie.title} Trailer`}
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

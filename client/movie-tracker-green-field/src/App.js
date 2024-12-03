@@ -5,29 +5,34 @@ import MovieDetails from "./pages/MovieDetails";
 import TopRatedMovies from "./pages/TopRatedMovies";
 import UpcomingMovies from "./pages/UpcomingMovies";
 import PopularMovies from "./pages/PopularMovies";
+import Login from "./pages/Login";
+import UserPage from "./pages/User.page";
+import Register from "./pages/Register";
 
-const Profile = () => <h1>Your Profile Page</h1>; 
+const Profile = () => <h1>Your Profile Page</h1>;
 
 const App = () => {
   return (
-<<<<<<< HEAD
     <div className="App">
-      <p>Hello World test</p>
+      <Router>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/movie/:movieId" element={<MovieDetails />} />
+          <Route path="/movies/top-rated" element={<TopRatedMovies />} />
+          <Route path="/movies/upcoming" element={<UpcomingMovies />} />
+          <Route path="/movies/popular" element={<PopularMovies />} />
+
+          {/* Authentication Routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+          {/* User Routes */}
+          <Route path="/user-page" element={<UserPage />} />
+          <Route path="/profile" element={<Profile />} />
+        </Routes>
+      </Router>
     </div>
-=======
-
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/movie/:movieId" element={<MovieDetails />} />
-        <Route path="/movies/top-rated" element={<TopRatedMovies />} />
-        <Route path="/movies/upcoming" element={<UpcomingMovies />} />
-        <Route path="/movies/popular" element={<PopularMovies />} />
-        <Route path="/profile" element={<Profile />} /> {/* Profile page */}
-      </Routes>
-    </Router>
-
->>>>>>> f19478f85b6eb56e269ccb59893252122e216871
   );
 };
 

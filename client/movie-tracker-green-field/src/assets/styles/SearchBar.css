@@ -31,7 +31,8 @@
 }
 
 /* Search Button Styling */
-.button-21 {
+.search-bar .button-21 {
+  all: unset;
   align-items: center;
   appearance: none;
   background-color: #3eb2fd;
@@ -58,6 +59,7 @@
   vertical-align: top;
   white-space: nowrap;
 }
+
 
 .button-21:hover {
   background-position: -20px -20px;
