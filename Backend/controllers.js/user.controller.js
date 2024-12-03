@@ -1,49 +1,7 @@
 const User = require('../models/userModel');
 const Movie = require('../models/moviesModel');
-
-const registerUser = async (req, res) => {
-    try {
-        const { username, email, password } = req.body;
-
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ message: 'User already exists' });
-        }
-
-        const newUser = new User({
-            username,
-            email,
-            password,
-        });
-
-        await newUser.save();
-        res.status(201).json({ message: 'User created successfully' });
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error creating user' });
-    }
-}
-
-const loginUser = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(401).json({ message: 'Invalid email or password' });
-        }
-
-        if (password !== user.password) {
-            return res.status(400).json({ message: 'Invalid email or password' });
-        }
-
-        res.status(200).json({message: 'Login successful'});
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({message: "Server error"});
-    }
-}
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const addFavoriteMovie = async (req, res) => {
     const { userId, movieId } = req.body; // Get userId and movieId from the request body
@@ -204,15 +162,77 @@ const deleteWatchedMovie = async (req, res) => {
     }
 };
 
+// Register a new user
+const register = async(req, res) => {
+    // let email = req.body.email;
+    // let password = req.body.password;
+    // let username = req.body.username;
+    try {
+        let {email, password, username} = req.body;
+        if (!email || !password || !username) {
+            return res.status(400).json({ message: 'Please fill in all fields' });
+        }
+        let oldUser = await User.findOne({ email });
+        if (oldUser) {
+            return res.status(400).json({ message: 'Email already exists' });
+        }
+    
+        let hashedPassword = await bcrypt.hash(password, +process.env.SALT_ROUND);
+    
+        await User.create({
+            email,
+            password: hashedPassword,
+            username,
+        });
+        
+        return res.send({message: "Registered succesfully"});
+    } catch (error) {
+        return res.status(500).send({msg: "Internal server error"});
+    }
+};
 
+ const login = async (req, res) => {
+    try {
+        let {email, password} = req.body;
+    if(!email || !password) {
+        return res.send({
+            msg: "Please fill in all fields",
+        });
+    }
+    let registeredUser = await User.findOne({email});
+    if(!registeredUser) {
+        return res.send({msg: "User not found, please register first"});
+    }
+    let isPasswordCorrect = await bcrypt.compare(
+        password,
+        registeredUser.password
+    );
+    if(!isPasswordCorrect) {
+        return res.send({msg: "incorrect password"});
+    }
+
+    // Return Token (payload, secretkey)
+
+    // Generate the Token
+    let payload = {
+        userId: registeredUser._id,
+        email: registeredUser.email,
+    }
+    let token = await jwt.sign(payload, process.env.SECRET_KEY);
+
+    return res.send({msg: "Logged in successfully", token});
+    } catch (error) {
+        return res.status(500).send({msg: "Internal server error"});
+    }
+};
 
 module.exports = {
-    registerUser,
-    loginUser,
     getFavoritesWithDetails,
     addFavoriteMovie,
     addToWatchlist,
     getWatchlist,
     deleteFavorite,
     deleteWatchedMovie,
+    login,
+    register,
 };

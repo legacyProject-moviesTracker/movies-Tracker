@@ -1,10 +1,14 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const connection = require('./config/connection');
 require('dotenv').config();
 const userRoutes = require('./Routers/user.Router');
 const movieRoutes = require('./Routers/movies.Router');
 const commentsRoutes = require('./Routers/comments.Router');
+const User = require('./models/userModel');
+const verifyToken = require('./middleware/auth');
 
 // initialize the app
 const app = express();
