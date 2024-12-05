@@ -18,7 +18,7 @@ const Home = () => {
   const [carouselMovies, setCarouselMovies] = useState([]);
   const [freeToWatchMovies, setFreeToWatchMovies] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  // const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [username, setUsername] = useState("My Profile");
   const navigate = useNavigate();
 
@@ -27,7 +27,7 @@ const Home = () => {
     // console.log(token);
     if (token) {
       const decoded = jwtDecode(token);
-      console.log(decoded);
+      // console.log(decoded);
       setUsername(decoded.username || "User");
     }
     const loadMovies = async () => {
@@ -54,14 +54,14 @@ const Home = () => {
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
+    // setIsLoggedIn(false);
     setUsername("");
   };
 
   return (
     <>
       <Navbar
-        isLoggedIn={isLoggedIn}
+        // isLoggedIn={isLoggedIn}
         username={username}
         onLogout={handleLogout}
       />

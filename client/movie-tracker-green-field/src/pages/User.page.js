@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserFavorites from "../components/User-favorites";
+import Navbar from "../components/Navbar"
 import Comments from "../components/Comments";
-import {jwtDecode} from "jwt-decode"; // Fix incorrect import
+import { jwtDecode } from "jwt-decode"; // Fix incorrect import
 import "../assets/styles/Profile.css"; // Ensure you have Profile.css
 
 const UserPage = () => {
@@ -17,7 +18,7 @@ const UserPage = () => {
         const decoded = jwtDecode(token);
         setUsername(decoded.username || "User");
         setIsAuthenticated(true);
-        navigate("/user-page")
+        navigate("/user-page");
       } else {
         setIsAuthenticated(false);
         navigate("/login"); // Redirect to login if no token is found
@@ -35,6 +36,7 @@ const UserPage = () => {
 
   return (
     <div className="profile-container">
+      <Navbar/>
       <h1 className="welcome-message">Welcome, {username}!</h1>
       <div className="profile-content">
         <div className="favorites-section">
