@@ -25,9 +25,9 @@ function Register() {
     setLoading(true);
     setError("");
     try {
-      await axios.post("http://localhost:8080/register", userData);
+      await axios.post("http://localhost:8080/user/register", userData);
       alert("Registered successfully!");
-      navigate("/login");
+      navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "An error occurred. Try again.");
     } finally {

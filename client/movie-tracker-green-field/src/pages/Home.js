@@ -1,23 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import {jwtDecode} from "jwt-decode"; // Fix incorrect import
 import SearchBar from "../components/SearchBar";
 import MovieList from "../components/MovieList";
 import MovieCarousel from "../components/MovieCarousel";
 import Footer from "../components/Footer";
-import { fetchMovies, searchMovies, fetchFreeToWatchMovies } from "../services/api";
+import {
+  fetchMovies,
+  searchMovies,
+  fetchFreeToWatchMovies,
+} from "../services/api";
 
 const Home = () => {
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [popularMovies, setPopularMovies] = useState([]);
-  const [carouselMovies, setCarouselMovies] = useState([]); 
-  const [freeToWatchMovies, setFreeToWatchMovies] = useState([]); 
+  const [carouselMovies, setCarouselMovies] = useState([]);
+  const [freeToWatchMovies, setFreeToWatchMovies] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [username, setUsername] = useState("My Profile");
   const navigate = useNavigate();
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    // console.log(token);
+    if (token) {
+      const decoded = jwtDecode(token);
+      console.log(decoded);
+      setUsername(decoded.username || "User");
+    }
     const loadMovies = async () => {
       const trending = await fetchMovies("trending/movie/day");
       const popular = await fetchMovies("movie/popular");
@@ -25,7 +37,7 @@ const Home = () => {
 
       setTrendingMovies(trending || []);
       setPopularMovies(popular || []);
-      setCarouselMovies(trending || []); 
+      setCarouselMovies(trending || []);
       setFreeToWatchMovies(freeToWatch || []);
     };
 
@@ -48,7 +60,11 @@ const Home = () => {
 
   return (
     <>
-      <Navbar isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />
+      <Navbar
+        isLoggedIn={isLoggedIn}
+        username={username}
+        onLogout={handleLogout}
+      />
       <MovieCarousel movies={carouselMovies} />
       <SearchBar onSearch={handleSearch} />
       {searchResults.length > 0 ? (

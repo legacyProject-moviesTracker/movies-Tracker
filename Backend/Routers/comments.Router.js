@@ -8,9 +8,9 @@ const {
     getComments,
 } = require('../controllers.js/comments.controller');
 
-router.get('/comments', getComments)
-router.post('/comments', createComment);
-router.put('/comments/:id', updateComment);
-router.delete('/comments/:id', deleteComment);
+router.get('/', getComments)
+router.post('/', createComment);
+router.put('/:id', updateComment);
+router.delete('/:id', deleteComment);
 
 module.exports = router;
