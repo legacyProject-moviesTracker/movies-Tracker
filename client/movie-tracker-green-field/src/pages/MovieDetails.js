@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode"; // Fix incorrect import
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import {
@@ -17,10 +18,16 @@ const MovieDetails = ({ user }) => {
   const [relatedMovies, setRelatedMovies] = useState([]);
   const [trailerKey, setTrailerKey] = useState("");
   const [message, setMessage] = useState(""); // For displaying success/error messages
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
     const loadMovieDetails = async () => {
       try {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const decoded = jwtDecode(token);
+          setUsername(decoded.username || "User");
+        }
         const movieData = await fetchMovieDetails(movieId);
         const movieCast = await fetchMovieCast(movieId);
         const related = await fetchRelatedMovies(movieId);
@@ -84,7 +91,7 @@ const MovieDetails = ({ user }) => {
 
   return (
     <>
-      <Navbar />
+      <Navbar username={username} />
       <div
         className="movie-details-container"
         style={{

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../assets/styles/Navbar.css";
 
@@ -11,7 +11,7 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
   };
 
   const handleProfileClick = () => {
-    navigate("/userpage"); // Navigate to the user page
+    navigate("/user-page"); // Navigate to the user page
   };
 
   const handleLogout = () => {
@@ -23,16 +23,25 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
   return (
     <nav className="navbar">
       <div className="navbar-logo">
-        <span onClick={handleHomeClick} style={{ cursor: "pointer" }}>
+        <span
+          onClick={() => {
+            handleHomeClick();
+          }}
+          style={{ cursor: "pointer" }}
+        >
           MovieTracker
         </span>
       </div>
       <ul className="navbar-links">
-        <li>
-          <span onClick={handleHomeClick} style={{ cursor: "pointer" }}>
+        {/* <li>
+          <span
+            onClick={() => {
+              handleHomeClick();
+            }}
+          >
             Home
           </span>
-        </li>
+        </li> */}
         <li className="dropdown">
           <span>Movies</span>
           <ul className="dropdown-menu">
@@ -47,21 +56,23 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
             </li>
           </ul>
         </li>
-        {isLoggedIn && (
-          <li>
-            <span
-              onClick={handleProfileClick}
-              style={{
-                cursor: "pointer",
-                color: "#01b4e4",
-                fontWeight: "bold",
-                textDecoration: "underline",
-              }}
-            >
-              {username || "Your Profile"}
-            </span>
-          </li>
-        )}
+
+        <li>
+          <span
+            onClick={() => {
+              handleProfileClick();
+            }}
+            style={{
+              cursor: "pointer",
+              color: "#01b4e4",
+              fontWeight: "bold",
+              textDecoration: "underline",
+            }}
+          >
+            {username || ""}
+          </span>
+        </li>
+
         {isLoggedIn ? (
           <li>
             <button onClick={handleLogout} className="logout-btn">
