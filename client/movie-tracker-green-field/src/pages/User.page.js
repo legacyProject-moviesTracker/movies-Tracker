@@ -17,6 +17,7 @@ const UserPage = () => {
         const decoded = jwtDecode(token);
         setUsername(decoded.username || "User");
         setIsAuthenticated(true);
+        navigate("/user-page")
       } else {
         setIsAuthenticated(false);
         navigate("/login"); // Redirect to login if no token is found
