@@ -15,6 +15,7 @@ const UserPage = () => {
   // lists visibilities
   const [viewFavoriteList, setViewFavoriteList] = useState(false);
   const [viewWatchedList, setViewWatchedList] = useState(false);
+  const [viewAllMoviesList, setViewAllMoviesList] = useState(true);
 
   const navigate = useNavigate();
 
@@ -44,9 +45,12 @@ const UserPage = () => {
   return (
     <div className="profile-container">
       <Navbar
-        allMovies={allMovies}
-        favoriteMovies={favoriteMovies}
-        watchedMovies={watchedMovies}
+        viewFavoriteList={viewFavoriteList}
+        setViewFavoriteList={setViewFavoriteList}
+        viewWatchedList={viewWatchedList}
+        setViewWatchedList={setViewWatchedList}
+        viewAllMoviesList={viewAllMoviesList}
+        setViewAllMoviesList={setViewAllMoviesList}
       />
       <h1 className="welcome-message">Welcome, {username}!</h1>
       <div className="profile-content">
@@ -58,6 +62,9 @@ const UserPage = () => {
             setFavoriteMovies={setFavoriteMovies}
             watchedMovies={watchedMovies}
             setWatchedMovies={setWatchedMovies}
+            viewFavoriteList={viewFavoriteList}
+            viewWatchedList={viewWatchedList}
+            viewAllMoviesList={viewAllMoviesList}
           />
         </div>
         <div className="comments-section">

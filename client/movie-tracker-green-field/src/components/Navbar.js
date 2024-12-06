@@ -6,9 +6,12 @@ const Navbar = ({
   isLoggedIn,
   username,
   onLogout,
-  watchedMovies,
-  favoriteMovies,
-  allMovies,
+  viewFavoriteList,
+  setViewFavoriteList,
+  viewWatchedList,
+  setViewWatchedList,
+  viewAllMoviesList,
+  setViewAllMoviesList,
 }) => {
   const navigate = useNavigate();
 
@@ -40,15 +43,6 @@ const Navbar = ({
         </span>
       </div>
       <ul className="navbar-links">
-        {/* <li>
-          <span
-            onClick={() => {
-              handleHomeClick();
-            }}
-          >
-            Home
-          </span>
-        </li> */}
         <li className="dropdown">
           <span>Movies</span>
           <ul className="dropdown-menu">
@@ -61,9 +55,45 @@ const Navbar = ({
             <li>
               <Link to="/movies/popular">Popular</Link>
             </li>
-            <li>{allMovies && <a>All My Movies</a>}</li>
-            <li>{favoriteMovies && <a>Favorite Movies</a>}</li>
-            <li>{watchedMovies && <a>Watched Movies</a>}</li>
+            {!viewFavoriteList && (
+              <li>
+                <a
+                  onClick={() => {
+                    setViewFavoriteList(true);
+                    setViewWatchedList(false);
+                    setViewAllMoviesList(false);
+                  }}
+                >
+                  Favorite Movies
+                </a>
+              </li>
+            )}{" "}
+            {!viewWatchedList && (
+              <li>
+                <a
+                  onClick={() => {
+                    setViewWatchedList(true);
+                    setViewFavoriteList(false);
+                    setViewAllMoviesList(false);
+                  }}
+                >
+                  Watched Movies
+                </a>
+              </li>
+            )}
+            {!viewAllMoviesList && (
+              <li>
+                <a
+                  onClick={() => {
+                    setViewAllMoviesList(true);
+                    setViewWatchedList(false);
+                    setViewFavoriteList(false);
+                  }}
+                >
+                  All My Movies
+                </a>
+              </li>
+            )}
           </ul>
         </li>
 

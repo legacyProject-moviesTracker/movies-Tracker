@@ -9,10 +9,11 @@ function UserMovies({
   setFavoriteMovies,
   watchedMovies,
   setWatchedMovies,
+  viewFavoriteList,
+  viewWatchedList,
+  viewAllMoviesList,
 }) {
-  // const [allMovies, setAllMovies] = useState([]);
-  // const [favoriteMovies, setFavoriteMovies] = useState([]);
-  // const [watchedMovies, setWatchedMovies] = useState([]);
+  
   const [error, setError] = useState("");
 
   let userId;
