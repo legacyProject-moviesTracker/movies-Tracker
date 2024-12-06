@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const userRoutes = require("./Routers/user.Router");
 const movieRoutes = require("./Routers/movies.Router");
-const commentsRoutes = require("./Routers/comments.Router");
 
 // initialize the app
 const connection = require("./config/connection");
@@ -22,7 +21,6 @@ app.use(cors());
 
 app.use("/user", userRoutes);
 app.use("/movies", movieRoutes);
-app.use("/comments", commentsRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
