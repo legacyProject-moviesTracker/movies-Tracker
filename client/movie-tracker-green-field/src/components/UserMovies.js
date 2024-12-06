@@ -75,34 +75,6 @@ function UserMovies({
     fetchWatchedMovies();
   }, [userId, token]); // Runs only when userId or token changes
 
-  // Function to add a movie to favorites
-  // const handleAddToFavorites = async (movieId) => {
-  //   try {
-  //     const response = await axios.post(
-  //       `http://localhost:8080/movies/favorites`,
-  //       {
-  //         userId,
-  //         movieId,
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-
-  //     if (response.status === 200) {
-  //       // Update local state to reflect the new favorite
-  //       const newFavoriteMovie = response.data.movie; // Assume backend returns the added movie
-  //       setFavoriteMovies((prevMovies) => [...prevMovies, newFavoriteMovie]);
-  //       alert("Movie added to favorites!");
-  //     }
-  //   } catch (err) {
-  //     console.error("Error adding movie to favorites:", err);
-  //     alert("Failed to add movie to favorites.");
-  //   }
-  // };
-
   // Function to delete a movie from favorites
   const handleDeleteFromFavorite = async (movieId) => {
     try {
@@ -182,6 +154,29 @@ function UserMovies({
     } catch (err) {
       console.error("Error removing movie from list:", err);
       alert("Failed to remove movie from list.");
+    }
+  };
+
+  // delete all the list
+  const handleDeleteAllMovies = async () => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:8080/movies/deleteAllList`, // Dynamic path with ID
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (response.status === 200) {
+        // Update local state
+        setAllMovies([]);
+        setWatchedMovies([]);
+        setFavoriteMovies([]);
+        alert("all movies removed.");
+      }
+    } catch (err) {
+      console.error("Error removing all movie from list:", err);
+      alert("Failed to remove movies list.");
     }
   };
 
@@ -430,6 +425,7 @@ function UserMovies({
                           Remove from Watched
                         </button>
                       )}
+
                       <button
                         style={{ backgroundColor: "red" }}
                         className="btn btn-danger"
@@ -444,6 +440,16 @@ function UserMovies({
             </div>
           )}
         </div>
+      ) : (
+        ""
+      )}
+      {allMovies.length > 0 ? (
+        <button
+          style={{ backgroundColor: "red" }}
+          onClick={handleDeleteAllMovies}
+        >
+          Delete all list
+        </button>
       ) : (
         ""
       )}

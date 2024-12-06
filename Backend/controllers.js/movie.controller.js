@@ -268,6 +268,28 @@ const deleteMovieFromList = async (req, res) => {
   }
 };
 
+// delete all the list
+
+const deleteAllList = async (req, res) => {
+  try {
+    const result = await Movie.deleteMany();
+    console.log(result);
+    if (result.deletedCount === 0) {
+      return res
+        .status(404)
+        .json({ message: "there are no movies in your movies list." });
+    }
+    // movie.favorite = false;
+    res.status(200).json({
+      message: "all movies list removed successfully!",
+      data: result,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error deleting movie" });
+  }
+};
+
 module.exports = {
   getAllMovies,
   getWatchedMovies,
@@ -277,4 +299,5 @@ module.exports = {
   deleteFavoriteMovie,
   deleteWatchedMovie,
   deleteMovieFromList,
+  deleteAllList,
 };

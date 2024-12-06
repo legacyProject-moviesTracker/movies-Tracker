@@ -9,6 +9,7 @@ const {
   deleteFavoriteMovie,
   deleteWatchedMovie,
   deleteMovieFromList,
+  deleteAllList,
 } = require("../controllers.js/movie.controller");
 
 const router = express.Router();
@@ -21,5 +22,6 @@ router.post("/watched", addMovieToWatched);
 router.patch("/deleteFavorite/:id", deleteFavoriteMovie);
 router.patch("/deleteWatchedMovie/:id", deleteWatchedMovie);
 router.delete("/deleteMovieFromList/:id", deleteMovieFromList);
+router.delete("/deleteAllList", deleteAllList);
 
 module.exports = router;
