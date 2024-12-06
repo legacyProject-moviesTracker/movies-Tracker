@@ -70,20 +70,48 @@ const MovieDetails = ({ user }) => {
         {
           apiId: movieId,
           userId: decoded.userId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-        // ,
-        // {
-        //   headers: {
-        //     Authorization: `Bearer ${token}`,
-        //   },
-        // }
       );
       console.log(response);
-      
+
       alert(response.data.message);
     } catch (error) {
       console.error("Error adding movie to favorites:", error);
-      setMessage("An error occurred. Please try again.");
+      alert(error.response.data.message);
+    }
+  };
+  const handleAddToWatched = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      let decoded;
+      if (token) {
+        decoded = jwtDecode(token);
+        setUsername(decoded.username || "User");
+      }
+      // console.log(decoded);
+      const response = await axios.post(
+        `http://localhost:8080/movies/watched`,
+        {
+          apiId: movieId,
+          userId: decoded.userId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response);
+
+      alert(response.data.message);
+    } catch (error) {
+      console.error("Error adding movie to favorites:", error);
+      alert(error.response.data.message);
     }
   };
 
@@ -124,6 +152,12 @@ const MovieDetails = ({ user }) => {
                 onClick={handleAddToFavorites}
               >
                 Add to Favorites
+              </button>
+              <button
+                className="add-to-favorites-btn"
+                onClick={handleAddToWatched}
+              >
+                Add to watched
               </button>
             </div>
             <p className="movie-overview">{movie.overview}</p>

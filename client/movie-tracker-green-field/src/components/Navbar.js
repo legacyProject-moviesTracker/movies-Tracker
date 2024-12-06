@@ -2,7 +2,14 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../assets/styles/Navbar.css";
 
-const Navbar = ({ isLoggedIn, username, onLogout }) => {
+const Navbar = ({
+  isLoggedIn,
+  username,
+  onLogout,
+  watchedMovies,
+  favoriteMovies,
+  allMovies,
+}) => {
   const navigate = useNavigate();
 
   const handleHomeClick = () => {
@@ -54,6 +61,9 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
             <li>
               <Link to="/movies/popular">Popular</Link>
             </li>
+            <li>{allMovies && <a>All My Movies</a>}</li>
+            <li>{favoriteMovies && <a>Favorite Movies</a>}</li>
+            <li>{watchedMovies && <a>Watched Movies</a>}</li>
           </ul>
         </li>
 
