@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode"; // Fix incorrect import
 import Navbar from "../components/Navbar";
@@ -57,26 +58,29 @@ const MovieDetails = ({ user }) => {
 
   const handleAddToFavorites = async () => {
     try {
-      const response = await fetch(`/user/favorites`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-        body: JSON.stringify({
-          userId: user.userId,
-          movieId: movieId,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error adding to favorites:", errorData.message);
-        setMessage(errorData.message || "Failed to add movie to favorites.");
-        return;
+      const token = localStorage.getItem("token");
+      let decoded;
+      if (token) {
+        decoded = jwtDecode(token);
+        setUsername(decoded.username || "User");
       }
-
-      setMessage("Movie added to favorites!");
+      // console.log(decoded);
+      const response = await axios.post(
+        `http://localhost:8080/movies/favorites`,
+        {
+          apiId: movieId,
+          userId: decoded.userId,
+        }
+        // ,
+        // {
+        //   headers: {
+        //     Authorization: `Bearer ${token}`,
+        //   },
+        // }
+      );
+      console.log(response);
+      
+      alert(response.data.message);
     } catch (error) {
       console.error("Error adding movie to favorites:", error);
       setMessage("An error occurred. Please try again.");
@@ -131,9 +135,9 @@ const MovieDetails = ({ user }) => {
         <div className="related-movies-container">
           <h3 className="related-movies-title">Related Movies</h3>
           <ul className="related-movies-list">
-            {relatedMovies.map((related) => (
+            {relatedMovies.map((related, index) => (
               <li
-                key={related.id}
+                key={index}
                 className="related-movies-item"
                 onClick={() => handleRelatedMovieClick(related.id)}
                 style={{ cursor: "pointer" }}
@@ -155,8 +159,8 @@ const MovieDetails = ({ user }) => {
         <div className="movie-cast-section">
           <h2 className="movie-cast-title">Top Billed Cast</h2>
           <div className="cast-list-container">
-            {cast.map((actor) => (
-              <div key={actor.id} className="cast-card">
+            {cast.map((actor, index) => (
+              <div key={index} className="cast-card">
                 <div className="cast-card-img-container">
                   <img
                     src={actor.profileUrl}
