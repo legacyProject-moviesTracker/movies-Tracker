@@ -5,13 +5,7 @@ import "../assets/styles/Navbar.css";
 const Navbar = ({
   isLoggedIn,
   username,
-  onLogout,
-  viewFavoriteList,
-  setViewFavoriteList,
-  viewWatchedList,
-  setViewWatchedList,
-  viewAllMoviesList,
-  setViewAllMoviesList,
+  onLogout
 }) => {
   const navigate = useNavigate();
 
@@ -55,45 +49,6 @@ const Navbar = ({
             <li>
               <Link to="/movies/popular">Popular</Link>
             </li>
-            {!viewFavoriteList && (
-              <li>
-                <a
-                  onClick={() => {
-                    setViewFavoriteList(true);
-                    setViewWatchedList(false);
-                    setViewAllMoviesList(false);
-                  }}
-                >
-                  Favorite Movies
-                </a>
-              </li>
-            )}{" "}
-            {!viewWatchedList && (
-              <li>
-                <a
-                  onClick={() => {
-                    setViewWatchedList(true);
-                    setViewFavoriteList(false);
-                    setViewAllMoviesList(false);
-                  }}
-                >
-                  Watched Movies
-                </a>
-              </li>
-            )}
-            {!viewAllMoviesList && (
-              <li>
-                <a
-                  onClick={() => {
-                    setViewAllMoviesList(true);
-                    setViewWatchedList(false);
-                    setViewFavoriteList(false);
-                  }}
-                >
-                  All My Movies
-                </a>
-              </li>
-            )}
           </ul>
         </li>
 

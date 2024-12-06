@@ -18,7 +18,7 @@ const MovieDetails = ({ user }) => {
   const [cast, setCast] = useState([]);
   const [relatedMovies, setRelatedMovies] = useState([]);
   const [trailerKey, setTrailerKey] = useState("");
-  const [message, setMessage] = useState(""); // For displaying success/error messages
+  // const [message, setMessage] = useState(""); // For displaying success/error messages
   const [username, setUsername] = useState("");
 
   useEffect(() => {
@@ -161,7 +161,7 @@ const MovieDetails = ({ user }) => {
               </button>
             </div>
             <p className="movie-overview">{movie.overview}</p>
-            {message && <p className="favorite-message">{message}</p>}
+            {/* {message && <p className="favorite-message">{message}</p>} */}
           </div>
         </div>
 

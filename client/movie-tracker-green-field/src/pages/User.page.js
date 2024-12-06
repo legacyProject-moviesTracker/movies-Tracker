@@ -44,14 +44,7 @@ const UserPage = () => {
 
   return (
     <div className="profile-container">
-      <Navbar
-        viewFavoriteList={viewFavoriteList}
-        setViewFavoriteList={setViewFavoriteList}
-        viewWatchedList={viewWatchedList}
-        setViewWatchedList={setViewWatchedList}
-        viewAllMoviesList={viewAllMoviesList}
-        setViewAllMoviesList={setViewAllMoviesList}
-      />
+      <Navbar />
       <h1 className="welcome-message">Welcome, {username}!</h1>
       <div className="profile-content">
         <div className="favorites-section">
@@ -63,8 +56,11 @@ const UserPage = () => {
             watchedMovies={watchedMovies}
             setWatchedMovies={setWatchedMovies}
             viewFavoriteList={viewFavoriteList}
+            setViewFavoriteList={setViewFavoriteList}
             viewWatchedList={viewWatchedList}
+            setViewWatchedList={setViewWatchedList}
             viewAllMoviesList={viewAllMoviesList}
+            setViewAllMoviesList={setViewAllMoviesList}
           />
         </div>
         <div className="comments-section">

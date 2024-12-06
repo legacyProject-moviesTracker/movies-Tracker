@@ -10,10 +10,12 @@ function UserMovies({
   watchedMovies,
   setWatchedMovies,
   viewFavoriteList,
+  setViewFavoriteList,
   viewWatchedList,
+  setViewWatchedList,
   viewAllMoviesList,
+  setViewAllMoviesList,
 }) {
-  
   const [error, setError] = useState("");
 
   let userId;
@@ -74,32 +76,32 @@ function UserMovies({
   }, [userId, token]); // Runs only when userId or token changes
 
   // Function to add a movie to favorites
-  const handleAddToFavorites = async (movieId) => {
-    try {
-      const response = await axios.post(
-        `http://localhost:8080/movies/favorites`,
-        {
-          userId,
-          movieId,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  // const handleAddToFavorites = async (movieId) => {
+  //   try {
+  //     const response = await axios.post(
+  //       `http://localhost:8080/movies/favorites`,
+  //       {
+  //         userId,
+  //         movieId,
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
 
-      if (response.status === 200) {
-        // Update local state to reflect the new favorite
-        const newFavoriteMovie = response.data.movie; // Assume backend returns the added movie
-        setFavoriteMovies((prevMovies) => [...prevMovies, newFavoriteMovie]);
-        alert("Movie added to favorites!");
-      }
-    } catch (err) {
-      console.error("Error adding movie to favorites:", err);
-      alert("Failed to add movie to favorites.");
-    }
-  };
+  //     if (response.status === 200) {
+  //       // Update local state to reflect the new favorite
+  //       const newFavoriteMovie = response.data.movie; // Assume backend returns the added movie
+  //       setFavoriteMovies((prevMovies) => [...prevMovies, newFavoriteMovie]);
+  //       alert("Movie added to favorites!");
+  //     }
+  //   } catch (err) {
+  //     console.error("Error adding movie to favorites:", err);
+  //     alert("Failed to add movie to favorites.");
+  //   }
+  // };
 
   // Function to delete a movie from favorites
   const handleDeleteFromFavorite = async (movieId) => {
@@ -185,69 +187,265 @@ function UserMovies({
 
   return (
     <div className="container mt-4">
-      <h2>All Your Movies</h2>
-      {error && <p className="text-danger">{error}</p>}
-      {allMovies.length === 0 ? (
-        <p>No favorite movies found.</p>
-      ) : (
-        <div className="row">
-          {allMovies.map((movie) => (
-            <div
-              key={movie._id}
-              className="col-md-4 mb-4"
-              style={{ width: "18rem" }}
+      <ul>
+        {!viewFavoriteList && (
+          <ol>
+            <a
+              onClick={() => {
+                setViewFavoriteList(true);
+                setViewWatchedList(false);
+                setViewAllMoviesList(false);
+              }}
             >
-              <div className="card">
-                <img
-                  src={`https://image.tmdb.org/t/p/w400${movie.posterUrl}`}
-                  className="card-img-top"
-                  alt={movie.title}
-                />
-                <div className="card-body">
-                  <h5 className="card-title">
-                    {movie.title} {movie.favorite && <p>Favorite</p>}{" "}
-                    {movie.watched && <p>Watched</p>}
-                  </h5>
+              Favorite Movies
+            </a>
+          </ol>
+        )}{" "}
+        {!viewWatchedList && (
+          <ol>
+            <a
+              onClick={() => {
+                setViewWatchedList(true);
+                setViewFavoriteList(false);
+                setViewAllMoviesList(false);
+              }}
+            >
+              Watched Movies
+            </a>
+          </ol>
+        )}
+        {!viewAllMoviesList && (
+          <ol>
+            <a
+              onClick={() => {
+                setViewAllMoviesList(true);
+                setViewWatchedList(false);
+                setViewFavoriteList(false);
+              }}
+            >
+              All My Movies
+            </a>
+          </ol>
+        )}
+      </ul>
+      {viewAllMoviesList === true ? (
+        <div id="allMoviesList">
+          <h2>All Your Movies</h2>
+          {error && <p className="text-danger">{error}</p>}
+          {allMovies.length === 0 ? (
+            <p>No movies found.</p>
+          ) : (
+            <div className="row">
+              {allMovies.map((movie) => (
+                <div
+                  key={movie._id}
+                  className="col-md-4 mb-4"
+                  style={{ width: "18rem" }}
+                >
+                  <div className="card">
+                    <img
+                      src={`https://image.tmdb.org/t/p/w400${movie.posterUrl}`}
+                      className="card-img-top"
+                      alt={movie.title}
+                    />
+                    <div className="card-body">
+                      <h5 className="card-title">
+                        {movie.title} {movie.favorite && <p>Favorite</p>}{" "}
+                        {movie.watched && <p>Watched</p>}
+                      </h5>
 
-                  <p className="card-text">{movie.overview}</p>
-                  <p className="small text-muted">
-                    Release Date:{" "}
-                    {new Date(movie.releaseDate).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </p>
-                  {movie.favorite && (
-                    <button
-                      style={{ backgroundColor: "red" }}
-                      className="btn btn-danger"
-                      onClick={() => handleDeleteFromFavorite(movie._id)}
-                    >
-                      Remove from Favorites
-                    </button>
-                  )}
-                  {movie.watched && (
-                    <button
-                      style={{ backgroundColor: "red" }}
-                      className="btn btn-danger"
-                      onClick={() => handleDeleteFromWatched(movie._id)}
-                    >
-                      Remove from Watched
-                    </button>
-                  )}
-                  <button
-                    style={{ backgroundColor: "red" }}
-                    className="btn btn-danger"
-                    onClick={() => handleDeleteFromList(movie._id)}
-                  >
-                    Delete From my List
-                  </button>
+                      <p className="card-text">{movie.overview}</p>
+                      <p className="small text-muted">
+                        Release Date:{" "}
+                        {new Date(movie.releaseDate).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          }
+                        )}
+                      </p>
+                      {movie.favorite && (
+                        <button
+                          style={{ backgroundColor: "red" }}
+                          className="btn btn-danger"
+                          onClick={() => handleDeleteFromFavorite(movie._id)}
+                        >
+                          Remove from Favorites
+                        </button>
+                      )}
+                      {movie.watched && (
+                        <button
+                          style={{ backgroundColor: "red" }}
+                          className="btn btn-danger"
+                          onClick={() => handleDeleteFromWatched(movie._id)}
+                        >
+                          Remove from Watched
+                        </button>
+                      )}
+                      <button
+                        style={{ backgroundColor: "red" }}
+                        className="btn btn-danger"
+                        onClick={() => handleDeleteFromList(movie._id)}
+                      >
+                        Delete From my List
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
-          ))}
+          )}{" "}
         </div>
+      ) : (
+        ""
+      )}
+      {viewFavoriteList === true ? (
+        <div id="favoriteMovies">
+          <h2>Favorite Movies</h2>
+          {error && <p className="text-danger">{error}</p>}
+          {favoriteMovies.length === 0 ? (
+            <p>No favorite movies found.</p>
+          ) : (
+            <div className="row">
+              {favoriteMovies.map((movie) => (
+                <div
+                  key={movie._id}
+                  className="col-md-4 mb-4"
+                  style={{ width: "18rem" }}
+                >
+                  <div className="card">
+                    <img
+                      src={`https://image.tmdb.org/t/p/w400${movie.posterUrl}`}
+                      className="card-img-top"
+                      alt={movie.title}
+                    />
+                    <div className="card-body">
+                      <h5 className="card-title">
+                        {movie.title} {movie.favorite && <p>Favorite</p>}{" "}
+                        {movie.watched && <p>Watched</p>}
+                      </h5>
+
+                      <p className="card-text">{movie.overview}</p>
+                      <p className="small text-muted">
+                        Release Date:{" "}
+                        {new Date(movie.releaseDate).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          }
+                        )}
+                      </p>
+                      {movie.favorite && (
+                        <button
+                          style={{ backgroundColor: "red" }}
+                          className="btn btn-danger"
+                          onClick={() => handleDeleteFromFavorite(movie._id)}
+                        >
+                          Remove from Favorites
+                        </button>
+                      )}
+                      {movie.watched && (
+                        <button
+                          style={{ backgroundColor: "red" }}
+                          className="btn btn-danger"
+                          onClick={() => handleDeleteFromWatched(movie._id)}
+                        >
+                          Remove from Watched
+                        </button>
+                      )}
+                      <button
+                        style={{ backgroundColor: "red" }}
+                        className="btn btn-danger"
+                        onClick={() => handleDeleteFromList(movie._id)}
+                      >
+                        Delete From my List
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : (
+        ""
+      )}{" "}
+      {viewWatchedList === true ? (
+        <div id="favoriteMovies">
+          <h2>Watched Movies</h2>
+          {error && <p className="text-danger">{error}</p>}
+          {watchedMovies.length === 0 ? (
+            <p>No watched movies yet.</p>
+          ) : (
+            <div className="row">
+              {watchedMovies.map((movie) => (
+                <div
+                  key={movie._id}
+                  className="col-md-4 mb-4"
+                  style={{ width: "18rem" }}
+                >
+                  <div className="card">
+                    <img
+                      src={`https://image.tmdb.org/t/p/w400${movie.posterUrl}`}
+                      className="card-img-top"
+                      alt={movie.title}
+                    />
+                    <div className="card-body">
+                      <h5 className="card-title">
+                        {movie.title} {movie.favorite && <p>Favorite</p>}{" "}
+                        {movie.watched && <p>Watched</p>}
+                      </h5>
+
+                      <p className="card-text">{movie.overview}</p>
+                      <p className="small text-muted">
+                        Release Date:{" "}
+                        {new Date(movie.releaseDate).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          }
+                        )}
+                      </p>
+                      {movie.favorite && (
+                        <button
+                          style={{ backgroundColor: "red" }}
+                          className="btn btn-danger"
+                          onClick={() => handleDeleteFromFavorite(movie._id)}
+                        >
+                          Remove from Favorites
+                        </button>
+                      )}
+                      {movie.watched && (
+                        <button
+                          style={{ backgroundColor: "red" }}
+                          className="btn btn-danger"
+                          onClick={() => handleDeleteFromWatched(movie._id)}
+                        >
+                          Remove from Watched
+                        </button>
+                      )}
+                      <button
+                        style={{ backgroundColor: "red" }}
+                        className="btn btn-danger"
+                        onClick={() => handleDeleteFromList(movie._id)}
+                      >
+                        Delete From my List
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : (
+        ""
       )}
     </div>
   );
