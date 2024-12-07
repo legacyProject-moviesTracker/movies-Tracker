@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../assets/styles/Navbar.css";
 
-const Navbar = ({ isLoggedIn, username, onLogout }) => {
+const Navbar = ({
+  isLoggedIn,
+  username,
+  onLogout
+}) => {
   const navigate = useNavigate();
 
   const handleHomeClick = () => {
@@ -33,15 +37,6 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
         </span>
       </div>
       <ul className="navbar-links">
-        {/* <li>
-          <span
-            onClick={() => {
-              handleHomeClick();
-            }}
-          >
-            Home
-          </span>
-        </li> */}
         <li className="dropdown">
           <span>Movies</span>
           <ul className="dropdown-menu">

@@ -1,149 +1,306 @@
-require('dotenv').config();
-const axios = require('axios');
-const Movie = require('../models/moviesModel');
-const User = require('../models/userModel');
+require("dotenv").config();
+const axios = require("axios");
+const Movie = require("../models/moviesModel");
+const User = require("../models/userModel");
 
-const apiURL = `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.API_KEY}&language=en-US&page=1`;
+const apiURL = `https://api.themoviedb.org/3/movie?api_key=${process.env.API_KEY}&language=en-US&page=1`;
 
+// all favorite movies
 const getAllMovies = async (req, res) => {
-    try {
-        // Fetch the movies from the API
-        const response = await axios.get(apiURL);
-        
-        // Loop through the fetched movies and save each one to the database
-        for (const movieData of response.data.results) {
-            const { title, genre, release_date, poster_path, id } = movieData;
-
-            // Check if the movie already exists in the database (optional, to avoid duplicates)
-            const existingMovie = await Movie.findOne({ apiId: id });
-            if (!existingMovie) {
-                // Create a new movie entry and save it to the database
-                const newMovie = new Movie({
-                    title,
-                    genre: genre ? genre[0]?.name : 'Unknown', // Example for handling multiple genres
-                    releaseDate: release_date,
-                    posterUrl: `https://image.tmdb.org/t/p/w500${poster_path}`,
-                    apiId: id
-                });
-
-                await newMovie.save();
-            }
-        }
-
-        // Send the response to the user (optional)
-        res.status(200).json({ message: "Movies fetched and stored successfully!" });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Error fetching and storing movies" });
-    }
+  try {
+    const response = await Movie.find({});
+    console.log(response);
+    // Send the response to the user
+    res.status(200).json({
+      message: "All movies fetched and stored successfully!",
+      data: response,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching and storing all movies" });
+  }
 };
 
+// Reusable Authorization token
+const TMDB_AUTH_TOKEN =
+  "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NmNkYzk2ZWRiMDAxYzkzMzgzMWJhYTNkNDFlYmNkZCIsIm5iZiI6MTczMzUwNjEyNy45MSwic3ViIjoiNjc1MzM0NGY4NGNhOTI4ZDAwY2EwZjY3Iiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.rRUc7oSgPwwoFi-xUFaCbMTfg5Y97PQpiRCzbrR0vck";
+
+// Helper Function to fetch Movie Details
+const fetchMovieDetails = async (apiId) => {
+  const response = await fetch(
+    `https://api.themoviedb.org/3/movie/${apiId}?&language=en-US`,
+    {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: TMDB_AUTH_TOKEN,
+      },
+    }
+  );
+
+  if (!response.ok) throw new Error("Failed to fetch movie details");
+  return response.json();
+};
+
+// all favorite movies
+const getFavoriteMovies = async (req, res) => {
+  try {
+    const response = await Movie.find({ favorite: true });
+    console.log(response);
+    // Send the response to the user
+    res.status(200).json({
+      message: "Favorite movies fetched and stored successfully!",
+      data: response,
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error fetching and storing favorite movies" });
+  }
+};
+// all watched movies
+const getWatchedMovies = async (req, res) => {
+  try {
+    const response = await Movie.find({ watched: true });
+    console.log(response);
+    // Send the response to the user
+    res.status(200).json({
+      message: "Watched movies fetched and stored successfully!",
+      data: response,
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error fetching and storing watched movies" });
+  }
+};
+
+// Add Favorite Movie
 const addFavoriteMovie = async (req, res) => {
-    try {
-        const { apiId, userId } = req.body;
+  try {
+    const { apiId, userId } = req.body;
 
-        // Check if the user exists
-        const userExists = await User.findById(userId);
-        if (!userExists) {
-            return res.status(404).json({ message: "User not found" });
-        }
+    // Check if the user exists
+    const userExists = await User.findById(userId);
+    if (!userExists) return res.status(404).json({ message: "User not found" });
 
-        // Fetch the movie details from the external API using the apiId
-        const movieDetails = await axios.get(`https://api.themoviedb.org/3/movie/${apiId}?api_key=${process.env.API_KEY}&language=en-US`);
+    // Fetch Movie Details
+    const movieDetails = await fetchMovieDetails(apiId);
 
-        // Check if the movie already exists in the user's favorites
-        const existingMovie = await Movie.findOne({ apiId, userId });
-        if (existingMovie) {
-            return res.status(400).json({ message: "Movie is already in your favorites." });
-        }
+    // Check for Existing Movie
+    const existingMovie = await Movie.findOne({ apiId });
+    if (existingMovie) {
+      if (existingMovie.favorite)
+        return res
+          .status(400)
+          .json({ message: "Movie is already in your favorite list." });
 
-        // Create a new favorite movie entry
-        const newMovie = new Movie({
-            title: movieDetails.data.title,         // Movie title from the API
-            genre: movieDetails.data.genres[0]?.name || "Unknown", // Use first genre or "Unknown"
-            releaseDate: movieDetails.data.release_date,
-            posterUrl: `https://image.tmdb.org/t/p/w500${movieDetails.data.poster_path}`, // Movie poster URL
-            apiId,  // API ID of the movie
-            userId, // User ID to link the movie with the user
-        });
+      // Update favorite flag
+      existingMovie.favorite = true;
+      await existingMovie.save();
 
-        // Save the movie to the database
-        await newMovie.save();
-
-        // Add the movie to the user's favorites list
-        userExists.favoriteMovies.push(newMovie._id);
-        await userExists.save();
-
-        res.status(201).json({ message: "Movie added to favorites successfully!", movie: newMovie });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Error adding movie to favorites" });
+      return res.status(200).json({
+        message: "Movie added to favorites successfully!",
+        movie: existingMovie,
+      });
     }
+
+    // Create New Movie
+    const newMovie = new Movie({
+      title: movieDetails.title,
+      genre: movieDetails.genres[0]?.name || "Unknown",
+      releaseDate: movieDetails.release_date,
+      posterUrl: `https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`,
+      favorite: true,
+      watched: false,
+      comment: "",
+      apiId,
+    });
+
+    await newMovie.save();
+
+    // Add to User's Favorites
+    userExists.favoriteMovies.push(newMovie._id);
+    await userExists.save();
+
+    res.status(201).json({
+      message: "Movie added to favorites successfully!",
+      movie: newMovie,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Error adding movie to favorites" });
+  }
 };
 
-module.exports = { addFavoriteMovie };
+// Add Watched Movie
+const addMovieToWatched = async (req, res) => {
+  try {
+    const { apiId, userId } = req.body;
 
-const updateFavoriteMovie = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { apiId, userId } = req.body; // Expect new movie's apiId and userId
+    // Check if the user exists
+    const userExists = await User.findById(userId);
+    if (!userExists) return res.status(404).json({ message: "User not found" });
 
-        // Check if the user exists
-        const userExists = await User.findById(userId);
-        if (!userExists) {
-            return res.status(404).json({ message: "User not found" });
-        }
+    // Fetch Movie Details
+    const movieDetails = await fetchMovieDetails(apiId);
 
-        // Find the existing movie by its ID (from the request params) and userId
-        const movie = await Movie.findOne({ apiId, userId });
-        
-        if (!movie) {
-            return res.status(404).json({ message: "Movie not found in your favorites." });
-        }
+    // Check for Existing Movie
+    const existingMovie = await Movie.findOne({ apiId });
+    if (existingMovie) {
+      if (existingMovie.watched)
+        return res
+          .status(400)
+          .json({ message: "Movie is already in your watched list." });
 
-        // Fetch new movie details from the external API
-        const movieDetails = await axios.get(`https://api.themoviedb.org/3/movie/${apiId}?api_key=${process.env.API_KEY}&language=en-US`);
+      // Update watched flag
+      existingMovie.watched = true;
+      await existingMovie.save();
 
-        // Replace the movie details with the new data
-        movie.title = movieDetails.data.title;
-        movie.genre = movieDetails.data.genres[0]?.name || "Unknown";
-        movie.releaseDate = movieDetails.data.release_date;
-        movie.posterUrl = `https://image.tmdb.org/t/p/w500${movieDetails.data.poster_path}`;
-        movie.apiId = apiId;  // Updating apiId, in case it's changed
-
-        // Save the updated movie
-        await movie.save();
-
-        res.status(200).json({ message: "Movie updated successfully!", movie });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Error updating movie" });
+      return res.status(200).json({
+        message: "Movie added to watched successfully!",
+        movie: existingMovie,
+      });
     }
-};
 
+    // Create New Movie
+    const newMovie = new Movie({
+      title: movieDetails.title,
+      genre: movieDetails.genres[0]?.name || "Unknown",
+      releaseDate: movieDetails.release_date,
+      posterUrl: `https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`,
+      favorite: false,
+      watched: true,
+      comment: "",
+      apiId,
+    });
+
+    await newMovie.save();
+
+    // Add to User's Watched List
+    userExists.watchedMovies.push(newMovie._id);
+    await userExists.save();
+
+    res.status(201).json({
+      message: "Movie added to watched successfully!",
+      movie: newMovie,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Error adding movie to watched" });
+  }
+};
 
 const deleteFavoriteMovie = async (req, res) => {
-    try {
-        const { id } = req.params;
+  try {
+    const { id } = req.params;
+    const newValue = req.body.favorite;
 
-        // Find and delete the movie by ID
-        const movie = await Movie.findByIdAndDelete(id);
-
-        if (!movie) {
-            return res.status(404).json({ message: "Movie not found in your favorites." });
-        }
-
-        res.status(200).json({ message: "Movie removed from favorites successfully!" });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Error deleting movie" });
+    // Find and delete the movie by ID
+    const movie = await Movie.findByIdAndUpdate(
+      id,
+      { favorite: newValue },
+      { new: true }
+    );
+    console.log(movie);
+    if (!movie) {
+      return res
+        .status(404)
+        .json({ message: "Movie not found in your favorites." });
     }
+    // movie.favorite = false;
+    res.status(200).json({
+      message: "Movie removed from favorites successfully!",
+      data: movie,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error deleting movie" });
+  }
+};
+const deleteWatchedMovie = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const newValue = req.body.watched;
+
+    // Find and delete the movie by ID
+    const movie = await Movie.findByIdAndUpdate(
+      id,
+      { watched: newValue },
+      { new: true }
+    );
+    console.log(movie);
+    if (!movie) {
+      return res
+        .status(404)
+        .json({ message: "Movie not found in your watched list." });
+    }
+    // movie.favorite = false;
+    res.status(200).json({
+      message: "Movie removed from watched list successfully!",
+      data: movie,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error deleting movie" });
+  }
 };
 
+const deleteMovieFromList = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-module.exports = { 
-    getAllMovies,
-    addFavoriteMovie,
-    updateFavoriteMovie,
-    deleteFavoriteMovie
- };
+    // Find and delete the movie by ID
+    const movie = await Movie.findByIdAndDelete(id, { new: true });
+    console.log(movie);
+    if (!movie) {
+      return res
+        .status(404)
+        .json({ message: "Movie not found in your movie list." });
+    }
+    // movie.favorite = false;
+    res.status(200).json({
+      message: "Movie removed from movie list successfully!",
+      data: movie,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error deleting movie" });
+  }
+};
+
+// delete all the list
+
+const deleteAllList = async (req, res) => {
+  try {
+    const result = await Movie.deleteMany();
+    console.log(result);
+    if (result.deletedCount === 0) {
+      return res
+        .status(404)
+        .json({ message: "there are no movies in your movies list." });
+    }
+    // movie.favorite = false;
+    res.status(200).json({
+      message: "all movies list removed successfully!",
+      data: result,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error deleting movie" });
+  }
+};
+
+module.exports = {
+  getAllMovies,
+  getWatchedMovies,
+  getFavoriteMovies,
+  addFavoriteMovie,
+  addMovieToWatched,
+  deleteFavoriteMovie,
+  deleteWatchedMovie,
+  deleteMovieFromList,
+  deleteAllList,
+};

@@ -1,17 +1,27 @@
-const express = require('express');
+const express = require("express");
 
 const {
-    getAllMovies,
-    addFavoriteMovie,
-    updateFavoriteMovie,
-    deleteFavoriteMovie
-} = require('../controllers.js/movie.controller');
+  getAllMovies,
+  getWatchedMovies,
+  getFavoriteMovies,
+  addFavoriteMovie,
+  addMovieToWatched,
+  deleteFavoriteMovie,
+  deleteWatchedMovie,
+  deleteMovieFromList,
+  deleteAllList,
+} = require("../controllers.js/movie.controller");
 
 const router = express.Router();
 
-router.get('/', getAllMovies);
-router.post('/favorites', addFavoriteMovie);
-router.put('/favorites/:id', updateFavoriteMovie);
-router.delete('/favorites/:id', deleteFavoriteMovie);
+router.get("/", getAllMovies);
+router.get("/allFavoriteMovies", getFavoriteMovies);
+router.post("/favorites", addFavoriteMovie);
+router.get("/allWatchedMovies", getWatchedMovies);
+router.post("/watched", addMovieToWatched);
+router.patch("/deleteFavorite/:id", deleteFavoriteMovie);
+router.patch("/deleteWatchedMovie/:id", deleteWatchedMovie);
+router.delete("/deleteMovieFromList/:id", deleteMovieFromList);
+router.delete("/deleteAllList", deleteAllList);
 
 module.exports = router;
