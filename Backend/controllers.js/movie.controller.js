@@ -21,6 +21,27 @@ const getAllMovies = async (req, res) => {
   }
 };
 
+// Reusable Authorization token
+const TMDB_AUTH_TOKEN =
+  "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NmNkYzk2ZWRiMDAxYzkzMzgzMWJhYTNkNDFlYmNkZCIsIm5iZiI6MTczMzUwNjEyNy45MSwic3ViIjoiNjc1MzM0NGY4NGNhOTI4ZDAwY2EwZjY3Iiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.rRUc7oSgPwwoFi-xUFaCbMTfg5Y97PQpiRCzbrR0vck";
+
+// Helper Function to fetch Movie Details
+const fetchMovieDetails = async (apiId) => {
+  const response = await fetch(
+    `https://api.themoviedb.org/3/movie/${apiId}?&language=en-US`,
+    {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: TMDB_AUTH_TOKEN,
+      },
+    }
+  );
+
+  if (!response.ok) throw new Error("Failed to fetch movie details");
+  return response.json();
+};
+
 // all favorite movies
 const getFavoriteMovies = async (req, res) => {
   try {
@@ -56,137 +77,119 @@ const getWatchedMovies = async (req, res) => {
   }
 };
 
+// Add Favorite Movie
 const addFavoriteMovie = async (req, res) => {
   try {
-    const { apiId, userId } = req.body; // Extract `userId` from the request body
+    const { apiId, userId } = req.body;
 
     // Check if the user exists
-    const userExists = await User.findById(userId); // Fetch the user by ID
-    if (!userExists) {
-      return res.status(404).json({ message: "User not found" }); // Handle user not found case
-    }
+    const userExists = await User.findById(userId);
+    if (!userExists) return res.status(404).json({ message: "User not found" });
 
-    // Fetch the movie details from the external API using the `apiId`
-    const movieResponse = await fetch(
-      `https://api.themoviedb.org/3/movie/${apiId}?&language=en-US`,
-      {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NmNkYzk2ZWRiMDAxYzkzMzgzMWJhYTNkNDFlYmNkZCIsIm5iZiI6MTczMzUwNjEyNy45MSwic3ViIjoiNjc1MzM0NGY4NGNhOTI4ZDAwY2EwZjY3Iiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.rRUc7oSgPwwoFi-xUFaCbMTfg5Y97PQpiRCzbrR0vck",
-        },
-      }
-    );
+    // Fetch Movie Details
+    const movieDetails = await fetchMovieDetails(apiId);
 
-    if (!movieResponse.ok) {
-      return res
-        .status(movieResponse.status)
-        .json({ message: "Failed to fetch movie details from TMDB" });
-    }
-
-    const movieDetails = await movieResponse.json(); // Parse the movie details
-
-    // Check if the movie already exists in the database
+    // Check for Existing Movie
     const existingMovie = await Movie.findOne({ apiId });
     if (existingMovie) {
-      return res
-        .status(400)
-        .json({ message: "Movie is already in your favorites." }); // Prevent duplicates
+      if (existingMovie.favorite)
+        return res
+          .status(400)
+          .json({ message: "Movie is already in your favorite list." });
+
+      // Update favorite flag
+      existingMovie.favorite = true;
+      await existingMovie.save();
+
+      return res.status(200).json({
+        message: "Movie added to favorites successfully!",
+        movie: existingMovie,
+      });
     }
 
-    // Create a new movie entry in the database
+    // Create New Movie
     const newMovie = new Movie({
-      title: movieDetails.title, // Movie title from TMDB
-      genre: movieDetails.genres[0]?.name || "Unknown", // First genre or fallback
-      releaseDate: movieDetails.release_date, // Release date from TMDB
-      posterUrl: `https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`, // TMDB poster URL
-      favorite: true, // Mark as favorite
-      watched: false, // Default value
-      comment: "", // Default empty comment
-      apiId, // TMDB API movie ID
+      title: movieDetails.title,
+      genre: movieDetails.genres[0]?.name || "Unknown",
+      releaseDate: movieDetails.release_date,
+      posterUrl: `https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`,
+      favorite: true,
+      watched: false,
+      comment: "",
+      apiId,
     });
 
-    await newMovie.save(); // Save the new movie to the database
+    await newMovie.save();
 
-    // Add the movie to the user's favorites list
-    userExists.favoriteMovies.push(newMovie._id); // Push the movie's ObjectId to the user's favorites
-    await userExists.save(); // Save the updated user document
+    // Add to User's Favorites
+    userExists.favoriteMovies.push(newMovie._id);
+    await userExists.save();
 
-    // Respond with success
     res.status(201).json({
       message: "Movie added to favorites successfully!",
       movie: newMovie,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error adding movie to favorites" }); // Handle any errors
+    console.error(error.message);
+    res.status(500).json({ message: "Error adding movie to favorites" });
   }
 };
 
+// Add Watched Movie
 const addMovieToWatched = async (req, res) => {
   try {
-    const { apiId, userId } = req.body; // Extract `userId` from the request body
+    const { apiId, userId } = req.body;
 
     // Check if the user exists
-    const userExists = await User.findById(userId); // Fetch the user by ID
-    if (!userExists) {
-      return res.status(404).json({ message: "User not found" }); // Handle user not found case
-    }
+    const userExists = await User.findById(userId);
+    if (!userExists) return res.status(404).json({ message: "User not found" });
 
-    // Fetch the movie details from the external API using the `apiId`
-    const movieResponse = await fetch(
-      `https://api.themoviedb.org/3/movie/${apiId}?&language=en-US`,
-      {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NmNkYzk2ZWRiMDAxYzkzMzgzMWJhYTNkNDFlYmNkZCIsIm5iZiI6MTczMzUwNjEyNy45MSwic3ViIjoiNjc1MzM0NGY4NGNhOTI4ZDAwY2EwZjY3Iiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.rRUc7oSgPwwoFi-xUFaCbMTfg5Y97PQpiRCzbrR0vck",
-        },
-      }
-    );
+    // Fetch Movie Details
+    const movieDetails = await fetchMovieDetails(apiId);
 
-    if (!movieResponse.ok) {
-      return res
-        .status(movieResponse.status)
-        .json({ message: "Failed to fetch movie details from TMDB" });
-    }
-
-    const movieDetails = await movieResponse.json(); // Parse the movie details
-
-    // Check if the movie already exists in the database
+    // Check for Existing Movie
     const existingMovie = await Movie.findOne({ apiId });
     if (existingMovie) {
-      return res
-        .status(400)
-        .json({ message: "Movie is already in your watched list." }); // Prevent duplicates
+      if (existingMovie.watched)
+        return res
+          .status(400)
+          .json({ message: "Movie is already in your watched list." });
+
+      // Update watched flag
+      existingMovie.watched = true;
+      await existingMovie.save();
+
+      return res.status(200).json({
+        message: "Movie added to watched successfully!",
+        movie: existingMovie,
+      });
     }
 
-    // Create a new movie entry in the database
+    // Create New Movie
     const newMovie = new Movie({
-      title: movieDetails.title, // Movie title from TMDB
-      genre: movieDetails.genres[0]?.name || "Unknown", // First genre or fallback
-      releaseDate: movieDetails.release_date, // Release date from TMDB
-      posterUrl: `https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`, // TMDB poster URL
-      watched: true, // Default value
-      apiId, // TMDB API movie ID
+      title: movieDetails.title,
+      genre: movieDetails.genres[0]?.name || "Unknown",
+      releaseDate: movieDetails.release_date,
+      posterUrl: `https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`,
+      favorite: false,
+      watched: true,
+      comment: "",
+      apiId,
     });
 
-    await newMovie.save(); // Save the new movie to the database
+    await newMovie.save();
 
-    // Add the movie to the user's watched list
-    userExists.watchedMovies.push(newMovie._id); // Push the movie's ObjectId to the user's watched
-    await userExists.save(); // Save the updated user document
+    // Add to User's Watched List
+    userExists.watchedMovies.push(newMovie._id);
+    await userExists.save();
 
-    // Respond with success
     res.status(201).json({
       message: "Movie added to watched successfully!",
       movie: newMovie,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error adding movie to watched" }); // Handle any errors
+    console.error(error.message);
+    res.status(500).json({ message: "Error adding movie to watched" });
   }
 };
 
