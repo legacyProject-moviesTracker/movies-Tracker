@@ -7,8 +7,9 @@ const apiURL = `https://api.themoviedb.org/3/movie?api_key=${process.env.API_KEY
 
 // all favorite movies
 const getAllMovies = async (req, res) => {
+  const userId = req.params.userId;
   try {
-    const response = await Movie.find({});
+    const response = await Movie.find({userId});
     // console.log(response);
     // Send the response to the user
     res.status(200).json({
@@ -44,8 +45,9 @@ const fetchMovieDetails = async (apiId) => {
 
 // all favorite movies
 const getFavoriteMovies = async (req, res) => {
+  const userId = req.params.userId;
   try {
-    const response = await Movie.find({ favorite: true });
+    const response = await Movie.find({ userId, favorite: true });
     // console.log(response);
     // Send the response to the user
     res.status(200).json({
@@ -61,8 +63,9 @@ const getFavoriteMovies = async (req, res) => {
 };
 // all watched movies
 const getWatchedMovies = async (req, res) => {
+  const userId = req.params.userId;
   try {
-    const response = await Movie.find({ watched: true });
+    const response = await Movie.find({ userId, watched: true });
     // console.log(response);
     // Send the response to the user
     res.status(200).json({
@@ -117,6 +120,7 @@ const addFavoriteMovie = async (req, res) => {
       watched: false,
       comment: "",
       apiId,
+      userId,
     });
 
     await newMovie.save();
@@ -175,6 +179,7 @@ const addMovieToWatched = async (req, res) => {
       watched: true,
       comment: "",
       apiId,
+      userId,
     });
 
     await newMovie.save();

@@ -62,6 +62,7 @@ const Home = () => {
     <>
       <Navbar
         // isLoggedIn={isLoggedIn}
+        
         username={username}
         onLogout={handleLogout}
       />

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
+// import { useNavigate } from "react-router-dom";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode"; // Fix incorrect import
+// import { jwtDecode } from "jwt-decode"; // Fix incorrect import
 import "../assets/styles/Navbar.css";
 
 const Navbar = ({ isLoggedIn, username, onLogout }) => {
@@ -19,7 +20,7 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
 
   useEffect(() => {
     getAllUsers();
-    console.log("Updated searchedUser:", searchedUser);
+    // console.log("Updated searchedUser:", searchedUser);
     const handleClickOutside = (event) => {
       if (
         dropdownRef.current &&
@@ -36,7 +37,7 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [searchedUser]);
 
   const handleHomeClick = () => {
     navigate("/", { replace: true });
@@ -55,9 +56,8 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
   const getAllUsers = async () => {
     try {
       const token = localStorage.getItem("token");
-      let decoded;
+
       if (token) {
-        decoded = jwtDecode(token);
       }
       const allRetrievedUsers = await axios.get(
         "http://localhost:8080/user/allUsers",
@@ -80,8 +80,8 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
     const user = e.target.value.toLowerCase();
     setSearchInput(user); // Update input value
 
-    const filteredUsers = allUsers.filter(
-      (u) => u.username.toLowerCase().includes(user)
+    const filteredUsers = allUsers.filter((u) =>
+      u.username.toLowerCase().includes(user)
     );
     setSearchedUser(filteredUsers); // Set filtered results
   };
@@ -132,6 +132,7 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
               ref={dropdownRef} // Attach the ref to the dropdown
             >
               {searchedUser.map((user) => (
+                // console.log(user);
                 <ul
                   key={user._id}
                   style={{
@@ -144,7 +145,9 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
                     setSelectedUser(user);
                     setViewSearchPeople(false);
                     alert(`You selected ${user.username}`);
-                    // setSearchedUser([]); // Hide the results
+                    navigate(`/${user._id}`);
+                    window.location.reload();
+                    setSearchedUser([]); // Hide the results
                   }}
                 >
                   {user.username}

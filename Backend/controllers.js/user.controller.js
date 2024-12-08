@@ -80,8 +80,28 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+const getUserById = async (req, res) => {
+  const userId = req.params.userId; // Extract userId from params
+  // console.log("Received userId:", userId); // Debugging log
+
+  try {
+    const user = await User.findById(userId); // Use findById for MongoDB's _id field
+
+    if (!user) {
+      return res.status(404).send({ msg: "User not found" });
+    }
+
+    return res.status(200).send({ msg: "User retrieved successfully", user });
+  } catch (error) {
+    console.error("Error in getUserById:", error); // Log error for debugging
+    return res.status(500).send({ msg: "Internal server error" });
+  }
+};
+
+
 module.exports = {
   login,
   register,
   getAllUsers,
+  getUserById,
 };

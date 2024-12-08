@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import Comments from "../components/Comments";
 
 function UserMovies({
+  decoded,
   allMovies,
   setAllMovies,
   favoriteMovies,
@@ -18,7 +19,8 @@ function UserMovies({
   setViewAllMoviesList,
 }) {
   const [error, setError] = useState("");
-
+// console.log(decoded);
+  // let decoded;
   let userId;
   let token;
 
@@ -33,7 +35,9 @@ function UserMovies({
   useEffect(() => {
     async function fetchMovies() {
       try {
-        const response = await fetch(`http://localhost:8080/movies`);
+        const response = await fetch(
+          `http://localhost:8080/movies/${decoded.userId}`
+        );
         // console.log(response);
         const result = await response.json();
         // console.log(result);
@@ -47,7 +51,7 @@ function UserMovies({
     async function fetchFavoriteMovies() {
       try {
         const response = await fetch(
-          `http://localhost:8080/movies/allFavoriteMovies`
+          `http://localhost:8080/movies/allFavoriteMovies/${decoded.userId}`
         );
         // console.log(response);
         const result = await response.json();
@@ -62,7 +66,7 @@ function UserMovies({
     async function fetchWatchedMovies() {
       try {
         const response = await fetch(
-          `http://localhost:8080/movies/allWatchedMovies`
+          `http://localhost:8080/movies/allWatchedMovies/${decoded.userId}`
         );
         // console.log(response);
         const result = await response.json();
@@ -70,7 +74,7 @@ function UserMovies({
         setWatchedMovies(result.data); // Set the movies state with the response
       } catch (err) {
         console.error("Error fetching watched movies:", err);
-        setError("Failed to fetch watched movies. Try again later.");
+        setError("Failed to fetch movies. Try again later.");
       }
     }
     fetchWatchedMovies();
@@ -191,6 +195,8 @@ function UserMovies({
                 setViewFavoriteList(true);
                 setViewWatchedList(false);
                 setViewAllMoviesList(false);
+                
+                // console.log(favoriteMovies)
               }}
             >
               Favorite Movies
@@ -204,6 +210,7 @@ function UserMovies({
                 setViewWatchedList(true);
                 setViewFavoriteList(false);
                 setViewAllMoviesList(false);
+                // console.log(watchedMovies)
               }}
             >
               Watched Movies
@@ -219,14 +226,14 @@ function UserMovies({
                 setViewFavoriteList(false);
               }}
             >
-              All My Movies
+              All Movies
             </a>
           </ol>
         )}
       </ul>
       {viewAllMoviesList === true ? (
         <div id="allMoviesList">
-          <h2>All Your Movies</h2>
+          <h2>All Movies</h2>
           {error && <p className="text-danger">{error}</p>}
           {allMovies.length === 0 ? (
             <p>No movies found.</p>
@@ -288,10 +295,9 @@ function UserMovies({
                         Delete From my List
                       </button>
                     </div>
-                  </div>
-
-                  <div className="comments-section">
-                    <Comments movieId={movie._id} />
+                    <div className="comments-section">
+                      <Comments movieId={movie._id} />
+                    </div>
                   </div>
                 </div>
               ))}
@@ -365,9 +371,10 @@ function UserMovies({
                         Delete From my List
                       </button>
                     </div>
-                  </div>
-                  <div className="comments-section">
-                    <Comments movieId={movie._id} />
+
+                    <div className="comments-section">
+                      <Comments movieId={movie._id} />
+                    </div>
                   </div>
                 </div>
               ))}
@@ -442,9 +449,9 @@ function UserMovies({
                         Delete From my List
                       </button>
                     </div>
-                  </div>
-                  <div className="comments-section">
-                    <Comments movieId={movie._id} />
+                    <div className="comments-section">
+                      <Comments movieId={movie._id} />
+                    </div>
                   </div>
                 </div>
               ))}
