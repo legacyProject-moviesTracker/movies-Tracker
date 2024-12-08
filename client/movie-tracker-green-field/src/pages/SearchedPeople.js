@@ -28,10 +28,9 @@ const SearchedPeople = () => {
   // console.log(decoded);
   useEffect(() => {
     const token = localStorage.getItem("token");
-    
+
     try {
       if (token) {
-        
         setIsAuthenticated(true);
         // Fetch details of the user based on userId (if needed)
         fetchUserDetails(userId);
@@ -61,7 +60,7 @@ const SearchedPeople = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-    //   console.log(response);
+      //   console.log(response);
       setSelectedUser(response.data.user); // Update the state with fetched user
     } catch (error) {
       console.error("Error fetching user details:", error);
@@ -78,9 +77,18 @@ const SearchedPeople = () => {
   };
   return (
     <div className="profile-container">
-      <Navbar
-      />
-      <h1 className="welcome-message">Welcome to {selectedUser.username}!</h1>
+      <Navbar />
+      <h1
+        className="welcome-message movie-page-header"
+        style={{
+          backgroundColor: "#947a4a",
+          padding: "0",
+          margin: "0",
+          paddingTop: "15px",
+        }}
+      >
+        Welcome to {selectedUser.username}!
+      </h1>
       <div className="profile-content">
         <div className="favorites-section">
           <UserMovies
