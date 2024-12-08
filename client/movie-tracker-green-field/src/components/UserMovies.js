@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import Comments from "../components/Comments";
 
 function UserMovies({
   allMovies,
@@ -35,7 +36,7 @@ function UserMovies({
         const response = await fetch(`http://localhost:8080/movies`);
         // console.log(response);
         const result = await response.json();
-        console.log(result);
+        // console.log(result);
         setAllMovies(result.data); // Set the movies state with the response
       } catch (err) {
         console.error("Error fetching all movies:", err);
@@ -50,7 +51,7 @@ function UserMovies({
         );
         // console.log(response);
         const result = await response.json();
-        console.log(result);
+        // console.log(result);
         setFavoriteMovies(result.data); // Set the movies state with the response
       } catch (err) {
         console.error("Error fetching favorite movies:", err);
@@ -65,7 +66,7 @@ function UserMovies({
         );
         // console.log(response);
         const result = await response.json();
-        console.log(result);
+        // console.log(result);
         setWatchedMovies(result.data); // Set the movies state with the response
       } catch (err) {
         console.error("Error fetching watched movies:", err);
@@ -288,6 +289,10 @@ function UserMovies({
                       </button>
                     </div>
                   </div>
+
+                  <div className="comments-section">
+                    <Comments movieId={movie._id} />
+                  </div>
                 </div>
               ))}
             </div>
@@ -360,6 +365,9 @@ function UserMovies({
                         Delete From my List
                       </button>
                     </div>
+                  </div>
+                  <div className="comments-section">
+                    <Comments movieId={movie._id} />
                   </div>
                 </div>
               ))}
@@ -434,6 +442,9 @@ function UserMovies({
                         Delete From my List
                       </button>
                     </div>
+                  </div>
+                  <div className="comments-section">
+                    <Comments movieId={movie._id} />
                   </div>
                 </div>
               ))}

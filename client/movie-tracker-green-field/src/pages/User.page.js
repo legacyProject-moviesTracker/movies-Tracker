@@ -63,9 +63,9 @@ const UserPage = () => {
             setViewAllMoviesList={setViewAllMoviesList}
           />
         </div>
-        <div className="comments-section">
+        {/* <div className="comments-section">
           <Comments />
-        </div>
+        </div> */}
       </div>
     </div>
   );
