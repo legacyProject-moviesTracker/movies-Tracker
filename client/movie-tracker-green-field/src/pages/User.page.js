@@ -12,9 +12,9 @@ const UserPage = () => {
   const [favoriteMovies, setFavoriteMovies] = useState([]);
   const [watchedMovies, setWatchedMovies] = useState([]);
   // lists visibilities
-  const [viewFavoriteList, setViewFavoriteList] = useState(false);
+  const [viewFavoriteList, setViewFavoriteList] = useState(true);
   const [viewWatchedList, setViewWatchedList] = useState(false);
-  const [viewAllMoviesList, setViewAllMoviesList] = useState(true);
+  // const [viewAllMoviesList, setViewAllMoviesList] = useState(true);
 
   const navigate = useNavigate();
 
@@ -44,11 +44,21 @@ const UserPage = () => {
   }
 
   return (
-    <div className="profile-container">
+    <div className="profile-container ">
       <Navbar />
-      <h1 className="welcome-message">Welcome, {username}!</h1>
-      <div className="profile-content">
-        <div className="favorites-section">
+      <div className="profile-content ">
+        <div className="favorites-section ">
+          <h1
+            className="welcome-message movie-page-header"
+            style={{
+              backgroundColor: "#947a4a",
+              padding: "0",
+              margin: "0",
+              paddingTop: "15px",
+            }}
+          >
+            Welcome, {username}!
+          </h1>
           <UserMovies
             decoded={decoded}
             allMovies={allMovies}
@@ -61,8 +71,8 @@ const UserPage = () => {
             setViewFavoriteList={setViewFavoriteList}
             viewWatchedList={viewWatchedList}
             setViewWatchedList={setViewWatchedList}
-            viewAllMoviesList={viewAllMoviesList}
-            setViewAllMoviesList={setViewAllMoviesList}
+            // viewAllMoviesList={viewAllMoviesList}
+            // setViewAllMoviesList={setViewAllMoviesList}
           />
         </div>
       </div>

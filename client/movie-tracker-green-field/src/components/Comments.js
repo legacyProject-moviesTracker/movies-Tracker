@@ -93,12 +93,32 @@ function Comments({ movieId }) {
   }
 
   return (
-    <div className="outerContainer">
-      <h1 className="mb-4">Comments</h1>
+    <div
+      className="outerContainer"
+      style={{
+        margin: "0",
+        padding: "0",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "end",
+      }}
+    >
 
       {/* New Comment Form */}
-      <form onSubmit={handleAddComment} className="mb-4">
-        <div className="input-group">
+      <form
+        onSubmit={handleAddComment}
+      >
+        <div
+          className="input-group"
+          style={{
+            width: "165px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <input
             type="text"
             className="form-control"
@@ -106,6 +126,7 @@ function Comments({ movieId }) {
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             required
+            style={{ width: "255px" }}
           />
           <button type="submit" className="btn btn-primary">
             Add Comment
@@ -114,61 +135,111 @@ function Comments({ movieId }) {
       </form>
 
       {/* Comments List */}
-      <ul className="list-group">
+      <ul
+        className="list-group"
+        style={{
+          margin: "5px",
+          padding: "0",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+        }}
+      >
         {comments.map((comment) => (
-          <li key={comment._id} className="list-group-item">
-            <section style={{ backgroundColor: "#e7effd" }}>
-              <div className="container my-5 py-5 text-body">
+          <ol
+            key={comment._id}
+            className="list-group-item"
+            style={{
+              margin: "5px",
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              borderRadius: "20px",
+              border: "1px solid black",
+            }}
+          >
+            <section
+              style={{
+                // backgroundColor: "#e7effd",
+                padding: "0",
+                margin: "0",
+                color: "black",
+              }}
+            >
+              <div className="container ">
                 <div className="row d-flex justify-content-center">
                   <div className="col-md-11 col-lg-9 col-xl-7">
-                    <div className="d-flex flex-start mb-4">
-                      <div className="card w-100">
-                        <div className="textAndBtnContainer card-body p-4">
-                          <div className="commentTextContainer">
-                            {/* Username and Time */}
-                            <h5>{comment.username}</h5>
-                            <p className="small">
-                              {new Date(comment.createdAt).toLocaleString()}
-                            </p>
-                            {/* Comment Text */}
-                            <p>{comment.commentText}</p>
-                          </div>
-
-                          {/* Edit and Delete Buttons */}
-                          {comment.userId === currentUserId && ( // Only show edit/delete buttons for the user's own comments
-                            <div id="buttonsContainer">
-                              <button
-                                className="btn btn-sm btn-warning me-2"
-                                style={{ backgroundColor: "green" }}
-                                onClick={() => {
-                                  const updatedText = prompt(
-                                    "Edit your comment:",
-                                    comment.commentText
-                                  );
-                                  if (updatedText) {
-                                    handleEditComment(comment._id, updatedText);
-                                  }
-                                }}
-                              >
-                                Edit
-                              </button>
-                              <button
-                                className="btn btn-sm btn-danger"
-                                style={{ backgroundColor: "red" }}
-                                onClick={() => handleDeleteComment(comment._id)}
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          )}
+                    <div
+                      className="card"
+                      style={{ width: "100%", display: "flex" }}
+                    >
+                      <div
+                        className="textAndBtnContainer card-body"
+                        style={{
+                          width: "100%",
+                          padding: "1px",
+                          margin: "5px",
+                        }}
+                      >
+                        <div className="commentTextContainer">
+                          {/* Username and Time */}
+                          <h5>{comment.username}</h5>
+                          <p className="small">
+                            {new Date(comment.createdAt).toLocaleString()}
+                          </p>
+                          {/* Comment Text */}
+                          <p>{comment.commentText}</p>
                         </div>
+
+                        {/* Edit and Delete Buttons */}
+                        {comment.userId === currentUserId && ( // Only show edit/delete buttons for the user's own comments
+                          <div
+                            id="buttonsContainer"
+                            // style={{ display: "flex", gap: "5px" }}
+                          >
+                            <button
+                              // className="btn-warning"
+                              style={{
+                                backgroundColor: "green",
+                                marginBottom: "5px",
+                                marginRight: "5px",
+                                borderRadius: "5px",
+                              }}
+                              onClick={() => {
+                                const updatedText = prompt(
+                                  "Edit your comment:",
+                                  comment.commentText
+                                );
+                                if (updatedText) {
+                                  handleEditComment(comment._id, updatedText);
+                                }
+                              }}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              // className="btn-danger"
+                              style={{
+                                backgroundColor: "red",
+                                marginBottom: "5px",
+                                marginRight: "5px",
+                                borderRadius: "5px",
+                              }}
+                              onClick={() => handleDeleteComment(comment._id)}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </section>
-          </li>
+          </ol>
         ))}
       </ul>
     </div>

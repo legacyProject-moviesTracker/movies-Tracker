@@ -22,7 +22,7 @@ const SearchBar = ({ onSearch }) => {
       <form className="search-bar" onSubmit={handleSearch}>
         <input
           type="text"
-          placeholder="Search for movies, series, or people..."
+          placeholder="Search for movies, series..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}

@@ -43,10 +43,22 @@ export const fetchFreeToWatchMovies = async () => {
  */
 export const fetchMovieDetails = async (movieId) => {
   try {
+    // Reusable Authorization token
+    const TMDB_AUTH_TOKEN =
+      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NmNkYzk2ZWRiMDAxYzkzMzgzMWJhYTNkNDFlYmNkZCIsIm5iZiI6MTczMzUwNjEyNy45MSwic3ViIjoiNjc1MzM0NGY4NGNhOTI4ZDAwY2EwZjY3Iiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.rRUc7oSgPwwoFi-xUFaCbMTfg5Y97PQpiRCzbrR0vck";
+
     const response = await fetch(
-      `${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`
+      `${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: TMDB_AUTH_TOKEN,
+        },
+      }
     );
     const data = await response.json();
+    console.log(data);
     return {
       title: data.title,
       releaseDate: data.release_date,

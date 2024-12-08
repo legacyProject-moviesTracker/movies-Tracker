@@ -100,64 +100,65 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
           MovieTracker
         </span>
       </div>
-      <div id="searchPeopleContainer">
-        <button
-          id="getAllUsersBtn"
-          style={{ display: viewSearchPeople ? "none" : "inline" }}
-          onClick={() => setViewSearchPeople(!viewSearchPeople)}
-        >
-          Find people
-        </button>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            setViewSearchPeople(!viewSearchPeople);
-            getAllUsers();
-            // console.log(selectedUser);
-            alert(`You selected ${selectedUser.username}`);
-          }}
-          style={{ display: viewSearchPeople ? "inline" : "none" }}
-        >
-          <input
-            type="text"
-            name="user"
-            ref={searchRef}
-            value={searchInput}
-            placeholder="Find Other People"
-            onChange={handleInputChange}
-          />
-          {searchedUser.length > 0 && searchInput && (
-            <div
-              id="searchResultsContainer"
-              ref={dropdownRef} // Attach the ref to the dropdown
-            >
-              {searchedUser.map((user) => (
-                // console.log(user);
-                <ul
-                  key={user._id}
-                  style={{
-                    padding: "5px",
-                    cursor: "pointer",
-                    borderBottom: "1px solid #eee",
-                    backgroundColor: "grey",
-                  }}
-                  onClick={() => {
-                    setSelectedUser(user);
-                    setViewSearchPeople(false);
-                    alert(`You selected ${user.username}`);
-                    navigate(`/${user._id}`);
-                    window.location.reload();
-                    setSearchedUser([]); // Hide the results
-                  }}
-                >
-                  {user.username}
-                </ul>
-              ))}
-            </div>
-          )}
-        </form>
-      </div>
+
       <ul className="navbar-links">
+        <li id="searchPeopleContainer">
+          <button
+            id="getAllUsersBtn"
+            style={{ display: viewSearchPeople ? "none" : "inline" }}
+            onClick={() => setViewSearchPeople(!viewSearchPeople)}
+          >
+            Find people
+          </button>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              setViewSearchPeople(!viewSearchPeople);
+              getAllUsers();
+              // console.log(selectedUser);
+              alert(`You selected ${selectedUser.username}`);
+            }}
+            style={{ display: viewSearchPeople ? "inline" : "none" }}
+          >
+            <input
+              type="text"
+              name="user"
+              ref={searchRef}
+              value={searchInput}
+              placeholder="Find Other People"
+              onChange={handleInputChange}
+            />
+            {searchedUser.length > 0 && searchInput && (
+              <div
+                id="searchResultsContainer"
+                ref={dropdownRef} // Attach the ref to the dropdown
+              >
+                {searchedUser.map((user) => (
+                  // console.log(user);
+                  <ul
+                    key={user._id}
+                    style={{
+                      padding: "5px",
+                      cursor: "pointer",
+                      borderBottom: "1px solid #eee",
+                      backgroundColor: "grey",
+                    }}
+                    onClick={() => {
+                      setSelectedUser(user);
+                      setViewSearchPeople(false);
+                      alert(`You selected ${user.username}`);
+                      navigate(`/${user._id}`);
+                      window.location.reload();
+                      setSearchedUser([]); // Hide the results
+                    }}
+                  >
+                    {user.username}
+                  </ul>
+                ))}
+              </div>
+            )}
+          </form>
+        </li>
         <li className="dropdown">
           <span>Movies</span>
           <ul className="dropdown-menu">

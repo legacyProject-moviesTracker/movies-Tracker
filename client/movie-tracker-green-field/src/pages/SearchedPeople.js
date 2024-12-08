@@ -17,9 +17,8 @@ const SearchedPeople = () => {
   const [favoriteMovies, setFavoriteMovies] = useState([]);
   const [watchedMovies, setWatchedMovies] = useState([]);
   // lists visibilities
-  const [viewFavoriteList, setViewFavoriteList] = useState(false);
+  const [viewFavoriteList, setViewFavoriteList] = useState(true);
   const [viewWatchedList, setViewWatchedList] = useState(false);
-  const [viewAllMoviesList, setViewAllMoviesList] = useState(true);
 
   //
   //   const [selectedUser, setSelectedUser] = useState({});
@@ -29,11 +28,10 @@ const SearchedPeople = () => {
   // console.log(decoded);
   useEffect(() => {
     const token = localStorage.getItem("token");
-    //   let decoded = jwtDecode(token);
+    
     try {
       if (token) {
-        // decoded = jwtDecode(token);
-        // setUsername(decoded.username || "User");
+        
         setIsAuthenticated(true);
         // Fetch details of the user based on userId (if needed)
         fetchUserDetails(userId);
@@ -81,7 +79,6 @@ const SearchedPeople = () => {
   return (
     <div className="profile-container">
       <Navbar
-      //   selectedUser= {selectedUser} setSelectedUser= {setSelectedUser}
       />
       <h1 className="welcome-message">Welcome to {selectedUser.username}!</h1>
       <div className="profile-content">
@@ -98,8 +95,6 @@ const SearchedPeople = () => {
             setViewFavoriteList={setViewFavoriteList}
             viewWatchedList={viewWatchedList}
             setViewWatchedList={setViewWatchedList}
-            viewAllMoviesList={viewAllMoviesList}
-            setViewAllMoviesList={setViewAllMoviesList}
           />
         </div>
       </div>
