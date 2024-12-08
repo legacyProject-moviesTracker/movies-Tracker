@@ -63,12 +63,13 @@ function Comments({ movieId }) {
   async function handleDeleteComment(commentId) {
     try {
       await axios.delete(`http://localhost:8080/comments/${commentId}`);
-      setComments(comments.filter((comment) => comment.id !== commentId));
+      setComments(comments.filter((comment) => comment._id !== commentId));
     } catch (err) {
       console.error("Error deleting comment:", err);
     }
   }
 
+  // Handle editing a comment
   // Handle editing a comment
   async function handleEditComment(commentId, updatedText) {
     try {
@@ -76,10 +77,13 @@ function Comments({ movieId }) {
         `http://localhost:8080/comments/${commentId}`,
         { commentText: updatedText }
       );
+
+      const updatedComment = res.data.comment;
+
       setComments(
         comments.map((comment) =>
-          comment.id === commentId
-            ? { ...comment, commentText: res.data.commentText }
+          comment._id === commentId
+            ? { ...comment, commentText: updatedComment.commentText }
             : comment
         )
       );
@@ -112,7 +116,7 @@ function Comments({ movieId }) {
       {/* Comments List */}
       <ul className="list-group">
         {comments.map((comment) => (
-          <li key={comment.id} className="list-group-item">
+          <li key={comment._id} className="list-group-item">
             <section style={{ backgroundColor: "#e7effd" }}>
               <div className="container my-5 py-5 text-body">
                 <div className="row d-flex justify-content-center">
@@ -142,7 +146,7 @@ function Comments({ movieId }) {
                                     comment.commentText
                                   );
                                   if (updatedText) {
-                                    handleEditComment(comment.id, updatedText);
+                                    handleEditComment(comment._id, updatedText);
                                   }
                                 }}
                               >
@@ -151,7 +155,7 @@ function Comments({ movieId }) {
                               <button
                                 className="btn btn-sm btn-danger"
                                 style={{ backgroundColor: "red" }}
-                                onClick={() => handleDeleteComment(comment.id)}
+                                onClick={() => handleDeleteComment(comment._id)}
                               >
                                 Delete
                               </button>

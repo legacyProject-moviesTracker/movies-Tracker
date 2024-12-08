@@ -41,23 +41,21 @@ const updateComment = async (req, res) => {
   const { commentText } = req.body; // Get the updated comment text from the request body
 
   try {
-    // Find the comment by its ID
-    const comment = await Comment.findById(id);
-    console.log(comment);
+    // Update the comment text and return the updated document
+    const updatedComment = await Comment.findByIdAndUpdate(
+      id,
+      { commentText },
+      { new: true } // Return the updated document
+    );
 
-    if (!comment) {
+    if (!updatedComment) {
       return res.status(404).json({ message: "Comment not found" });
     }
 
-    // Update the comment text
-    comment.commentText = commentText || comment.commentText;
-
-    // Save the updated comment
-    await comment.save();
-
-    res
-      .status(200)
-      .json({ message: "Comment updated successfully!", commentText: comment });
+    res.status(200).json({
+      message: "Comment updated successfully!",
+      comment: updatedComment, // Send the updated comment object
+    });
   } catch (error) {
     console.error("Error updating comment:", error);
     res.status(500).json({ error: "Failed to update comment." });
