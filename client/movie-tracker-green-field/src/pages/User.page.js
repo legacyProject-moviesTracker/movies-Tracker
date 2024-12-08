@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserMovies from "../components/UserMovies";
 import Navbar from "../components/Navbar";
-import Comments from "../components/Comments";
 import { jwtDecode } from "jwt-decode"; // Fix incorrect import
 import "../assets/styles/Profile.css"; // Ensure you have Profile.css
 
@@ -63,9 +62,6 @@ const UserPage = () => {
             setViewAllMoviesList={setViewAllMoviesList}
           />
         </div>
-        {/* <div className="comments-section">
-          <Comments />
-        </div> */}
       </div>
     </div>
   );

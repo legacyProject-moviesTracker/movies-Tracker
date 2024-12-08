@@ -15,7 +15,7 @@ function Comments({ movieId }) {
         const res = await axios.get("http://localhost:8080/comments", {
           params: { movieId }, // Pass movieId as a query parameter
         });
-        console.log(res.data);
+        // console.log(res.data);
         setComments(res.data);
 
         // Decode the user's token to get their user ID
