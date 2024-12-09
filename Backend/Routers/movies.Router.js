@@ -1,4 +1,5 @@
 const express = require("express");
+const verifyToken = require("../middleware/auth");
 
 const {
   getAllMovies,
@@ -14,14 +15,14 @@ const {
 
 const router = express.Router();
 
-router.get("/:userId", getAllMovies);
-router.get("/allFavoriteMovies/:userId", getFavoriteMovies);
-router.post("/favorites", addFavoriteMovie);
-router.get("/allWatchedMovies/:userId", getWatchedMovies);
-router.post("/watched", addMovieToWatched);
-router.patch("/deleteFavorite/:id", deleteFavoriteMovie);
-router.patch("/deleteWatchedMovie/:id", deleteWatchedMovie);
-router.delete("/deleteMovieFromList/:id", deleteMovieFromList);
-router.delete("/deleteAllList", deleteAllList);
+router.get("/:userId", verifyToken, getAllMovies);
+router.get("/allFavoriteMovies/:userId", verifyToken, getFavoriteMovies);
+router.post("/favorites", verifyToken, addFavoriteMovie);
+router.get("/allWatchedMovies/:userId", verifyToken, getWatchedMovies);
+router.post("/watched", verifyToken, addMovieToWatched);
+router.patch("/deleteFavorite/:id", verifyToken, deleteFavoriteMovie);
+router.patch("/deleteWatchedMovie/:id", verifyToken, deleteWatchedMovie);
+router.delete("/deleteMovieFromList/:id", verifyToken, deleteMovieFromList);
+router.delete("/deleteAllList", verifyToken, deleteAllList);
 
 module.exports = router;

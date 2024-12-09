@@ -7,22 +7,27 @@ function Comments({ movieId }) {
   const [newComment, setNewComment] = useState("");
   const [currentUserId, setCurrentUserId] = useState(null);
 
+  // Decode the user's token to get their user ID
+  const token = localStorage.getItem("token");
+
   // Fetch comments and decode the user's token on component mount
   useEffect(() => {
     async function fetchComments() {
       try {
         // Fetch comments for the specific movie
         const res = await axios.get("http://localhost:8080/comments", {
-          params: { movieId }, // Pass movieId as a query parameter
+          params: { movieId },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          // Pass movieId as a query parameter
         });
         // console.log(res.data);
         setComments(res.data);
 
-        // Decode the user's token to get their user ID
-        const token = localStorage.getItem("token");
         if (token) {
           const decoded = jwtDecode(token);
-          setCurrentUserId(decoded.id);
+          setCurrentUserId(decoded.userId);
         }
       } catch (err) {
         console.error("Error fetching comments:", err);
@@ -48,7 +53,12 @@ function Comments({ movieId }) {
       const res = await axios.post(
         "http://localhost:8080/comments/",
         newCommentData,
-        { new: true }
+        {
+          new: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       console.log(res);
       setComments([...comments, res.data.comment]); // Add new comment to the state
@@ -62,7 +72,11 @@ function Comments({ movieId }) {
   // Handle deleting a comment
   async function handleDeleteComment(commentId) {
     try {
-      await axios.delete(`http://localhost:8080/comments/${commentId}`);
+      await axios.delete(`http://localhost:8080/comments/${commentId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setComments(comments.filter((comment) => comment._id !== commentId));
     } catch (err) {
       console.error("Error deleting comment:", err);
@@ -75,7 +89,12 @@ function Comments({ movieId }) {
     try {
       const res = await axios.put(
         `http://localhost:8080/comments/${commentId}`,
-        { commentText: updatedText }
+        {
+          commentText: updatedText,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       const updatedComment = res.data.comment;
@@ -104,11 +123,8 @@ function Comments({ movieId }) {
         justifyContent: "end",
       }}
     >
-
       {/* New Comment Form */}
-      <form
-        onSubmit={handleAddComment}
-      >
+      <form onSubmit={handleAddComment}>
         <div
           className="input-group"
           style={{

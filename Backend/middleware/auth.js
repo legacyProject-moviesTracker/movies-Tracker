@@ -1,30 +1,42 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
+const User = require("../models/userModel");
 
-function verifyToken(req, res, next) {
-    let authHeader = req.headers.authorization;
-    if (!authHeader) {
-        return res.status(401).send({ message: 'Token not found' });
-    }
+// verify the token
+const verifyToken = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  // console.log(req.headers.authorization);
+  if (!authHeader || !authHeader.startsWith("Bearer")) {
+    return res.status(401).json({ message: "Unauthorized, Token not found" });
+  }
 
-    // Split the token from the header
-    let clientToken = authHeader.split(" ")[1];
+  // Check for Bearer format
+  const token = authHeader.startsWith("Bearer ")
+    ? authHeader.split(" ")[1]
+    : null;
 
-    try {
-        // Verify the token
-        let decoded = jwt.verify(clientToken, process.env.SECRET_KEY);
-        if (!decoded) {
-            return res.status(401).send({ message: 'Invalid token' });
-        }
-     
-        // Attach the decoded token to the request object
-        req.user = decoded;
-        // Call the next middleware
-        next();
-    } catch (error) {
-        console.log(error);
-        // Send and error response if the Token is invalid
-        return res.status(401).send({msg: "Invalid Token"});
-    }
-}
+  if (!token) {
+    return res
+      .status(401)
+      .json({ message: "Unauthorized, Token format is invalid" });
+  }
+
+  const secretKey = process.env.SECRET_KEY;
+  if (!secretKey) {
+    console.error("Secret key is not defined.");
+    return res.status(500).json({ message: "Server configuration error." });
+  }
+
+  try {
+    const decoded = jwt.verify(token, secretKey);
+    // console.log(decoded)
+    req.user = await User.findById(decoded.userId); // Attach user information to the request object
+    next(); // Pass control to the next middleware
+  } catch (error) {
+    console.error(`JWT Error: ${error.name} - ${error.message}`);
+    res
+      .status(401)
+      .json({ message: "Unauthorized, Token is invalid or expired" });
+  }
+};
 
 module.exports = verifyToken;

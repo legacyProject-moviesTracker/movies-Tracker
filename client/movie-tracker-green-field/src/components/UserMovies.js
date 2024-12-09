@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { Link } from "react-router-dom";
-import { fetchMovies } from "../services/api";
 import Comments from "../components/Comments";
 
 function UserMovies({
@@ -38,7 +37,12 @@ function UserMovies({
     async function fetchMovies() {
       try {
         const response = await fetch(
-          `http://localhost:8080/movies/${decoded.userId}`
+          `http://localhost:8080/movies/${decoded.userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         // console.log(response);
         const result = await response.json();
@@ -53,7 +57,12 @@ function UserMovies({
     async function fetchFavoriteMovies() {
       try {
         const response = await fetch(
-          `http://localhost:8080/movies/allFavoriteMovies/${decoded.userId}`
+          `http://localhost:8080/movies/allFavoriteMovies/${decoded.userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         // console.log(response);
         const result = await response.json();
@@ -68,7 +77,12 @@ function UserMovies({
     async function fetchWatchedMovies() {
       try {
         const response = await fetch(
-          `http://localhost:8080/movies/allWatchedMovies/${decoded.userId}`
+          `http://localhost:8080/movies/allWatchedMovies/${decoded.userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         // console.log(response);
         const result = await response.json();
@@ -95,9 +109,8 @@ function UserMovies({
     try {
       const response = await axios.patch(
         `http://localhost:8080/movies/deleteFavorite/${movieId}`, // Dynamic path with ID
-        { favorite: false },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token}`, favorite: false },
         }
       );
 
@@ -124,9 +137,9 @@ function UserMovies({
     try {
       const response = await axios.patch(
         `http://localhost:8080/movies/deleteWatchedMovie/${movieId}`, // Dynamic path with ID
-        { watched: false },
+
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token}`, watched: false },
         }
       );
 
@@ -148,29 +161,6 @@ function UserMovies({
     }
   };
 
-  // Function to delete a movie from all the list
-  // const handleDeleteFromList = async (movieId) => {
-  //   try {
-  //     const response = await axios.delete(
-  //       `http://localhost:8080/movies/deleteMovieFromList/${movieId}`, // Dynamic path with ID
-  //       {
-  //         headers: { Authorization: `Bearer ${token}` },
-  //       }
-  //     );
-
-  //     if (response.status === 200) {
-  //       // Update local state
-  //       setAllMovies((prevMovies) =>
-  //         prevMovies.filter((movie) => movie._id !== movieId)
-  //       );
-  //       //
-  //       alert("Movie removed from your list.");
-  //     }
-  //   } catch (err) {
-  //     console.error("Error removing movie from list:", err);
-  //     alert("Failed to remove movie from list.");
-  //   }
-  // };
 
   // delete all the list
   const handleDeleteAllMovies = async () => {

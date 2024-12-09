@@ -5,7 +5,7 @@ import axios from "axios";
 // import { jwtDecode } from "jwt-decode"; // Fix incorrect import
 import "../assets/styles/Navbar.css";
 
-const Navbar = ({ isLoggedIn, username, onLogout }) => {
+const Navbar = ({ setIsLoggedIn, isLoggedIn, username, setUsername }) => {
   const [viewSearchPeople, setViewSearchPeople] = useState(false);
 
   const [allUsers, setAllUsers] = useState([]);
@@ -49,8 +49,13 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
   };
 
   const handleLogout = () => {
-    onLogout(); // Call the logout function
+    setUsername("");
+    setIsLoggedIn(false);
+    localStorage.clear();
+
     localStorage.removeItem("token"); // Clear the token from storage
+    // console.log(localStorage.getItem("token"));
+    
     navigate("/login"); // Redirect to login page
   };
   const getAllUsers = async () => {
@@ -192,7 +197,12 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
 
         {isLoggedIn ? (
           <li>
-            <button onClick={handleLogout} className="logout-btn">
+            <button
+              onClick={() => {
+                handleLogout();
+              }}
+              className="logout-btn"
+            >
               Log Out
             </button>
           </li>

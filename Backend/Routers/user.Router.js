@@ -9,8 +9,8 @@ const {
   getUserById,
 } = require("../controllers.js/user.controller");
 
-router.get("/allUsers", getAllUsers);
-router.get("/:userId", getUserById);
+router.get("/allUsers", verifyToken, getAllUsers);
+router.get("/:userId", verifyToken, getUserById);
 router.post("/login", login);
 router.post("/register", register);
 

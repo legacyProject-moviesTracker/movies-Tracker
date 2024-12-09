@@ -15,29 +15,31 @@ const UserPage = () => {
   const [viewFavoriteList, setViewFavoriteList] = useState(true);
   const [viewWatchedList, setViewWatchedList] = useState(false);
   // const [viewAllMoviesList, setViewAllMoviesList] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("token");
-  let decoded = jwtDecode(token);
+  let token;
+  let decoded;
   // console.log(decoded);
+
+  // Decode the token to retrieve userId
+  if (localStorage.getItem("token")) {
+    token = localStorage.getItem("token");
+    decoded = jwtDecode(token);
+  }
   useEffect(() => {
     try {
-      if (token) {
-        // decoded = jwtDecode(token);
-        setUsername(decoded.username || "User");
-        setIsAuthenticated(true);
-        navigate("/user-page");
-      } else {
-        setIsAuthenticated(false);
-        navigate("/login"); // Redirect to login if no token is found
-      }
+      // decoded = jwtDecode(token);
+      setUsername(decoded.username || "User");
+      setIsAuthenticated(true);
+      navigate("/user-page");
     } catch (error) {
       console.error("Error decoding token:", error);
       setIsAuthenticated(false);
       navigate("/login"); // Redirect if token decoding fails
     }
-  }, [navigate, decoded.username, token]);
+  }, []);
 
   if (!isAuthenticated) {
     return <h1>Redirecting to Login...</h1>; // Show a placeholder while redirecting
@@ -45,7 +47,12 @@ const UserPage = () => {
 
   return (
     <div className="profile-container ">
-      <Navbar />
+      <Navbar
+        username={username}
+        setUsername={setUsername}
+        isLoggedIn={isLoggedIn}
+        setIsLoggedIn={setIsLoggedIn}
+      />
       <div className="profile-content ">
         <div className="favorites-section ">
           <h1

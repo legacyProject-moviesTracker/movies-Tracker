@@ -6,7 +6,8 @@ const axios = require("axios");
 
 const createComment = async (req, res) => {
   const { username, movieId, commentText } = req.body;
-
+  const userId = req.user._id;
+  // console.log(userId);
   // Validate required fields
   if (!commentText) {
     return res.status(400).json({
@@ -23,7 +24,7 @@ const createComment = async (req, res) => {
     }
 
     // Create and save new comment
-    const newComment = new Comment({ username, movieId, commentText });
+    const newComment = new Comment({ username, movieId, commentText, userId });
     await newComment.save();
     // console.log(newComment);
     res.status(201).json({
@@ -64,6 +65,8 @@ const updateComment = async (req, res) => {
 
 const deleteComment = async (req, res) => {
   const { id } = req.params; // Get the comment ID from the URL parameter
+  // const userId = req.user._id;
+  // console.log(userId);
 
   try {
     // Find the comment by its ID and delete it
@@ -83,6 +86,8 @@ const deleteComment = async (req, res) => {
 const getComments = async (req, res) => {
   try {
     const { movieId } = req.query; // Get movieId from query parameters
+    // const userId = req.user._id;
+    // console.log(userId);
 
     // Fetch comments filtered by movieId
     const query = movieId ? { movieId } : {}; // If movieId is provided, filter by it
