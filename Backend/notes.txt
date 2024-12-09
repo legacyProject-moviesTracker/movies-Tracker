@@ -1,0 +1,2 @@
+mongodb+srv://wahid:wahid1234@cluster0.0b7qc.mongodb.net/moviesTracker?retryWrites=true&w=majority&appName=Cluster0
+mongodb+srv://sha27:sha27@cluster0.qbtp9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0  

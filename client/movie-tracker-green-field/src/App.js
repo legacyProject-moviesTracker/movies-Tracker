@@ -9,7 +9,7 @@ import Login from "./pages/Login";
 import UserPage from "./pages/User.page";
 import Register from "./pages/Register";
 import SearchedPeople from "./pages/SearchedPeople";
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 // const Profile = () => <h1>Your Profile Page</h1>;
 
 const App = () => {
@@ -31,6 +31,7 @@ const App = () => {
           {/* User Routes */}
           <Route path="/user-page" element={<UserPage />} />
           <Route path="/:userId" element={<SearchedPeople />} />
+          
         </Routes>
       </Router>
     </div>

@@ -99,9 +99,33 @@ const getUserById = async (req, res) => {
 };
 
 
+// Update user information
+const updateUser = async (req, res) => {
+  const userId = req.params.userId;
+  const { username, email, password } = req.body;
+
+  try {
+    const updates = { username, email };
+    if (password) {
+      updates.password = await bcrypt.hash(password, +process.env.SALT_ROUND);
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updates, { new: true });
+    if (!updatedUser) {
+      return res.status(404).send({ msg: "User not found" });
+    }
+
+    return res.status(200).send({ msg: "User updated successfully", user: updatedUser });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    return res.status(500).send({ msg: "Internal server error" });
+  }
+};
+
 module.exports = {
   login,
   register,
   getAllUsers,
   getUserById,
+  updateUser,
 };

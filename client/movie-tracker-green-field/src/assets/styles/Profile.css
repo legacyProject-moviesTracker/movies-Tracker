@@ -16,8 +16,12 @@
   /* Layout for profile content */
   .profile-content {
     display: flex;
-    flex-wrap: wrap;
+    background-color: #d9eafc;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center;
     height: 100vh;
+    padding: 3px;
     justify-content: space-between;
     gap: 20px;
   }
@@ -40,3 +44,32 @@
     color: #0d253f;
   }
   
+  /* EDIT Section  */
+  .edit-section {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .edit-section h2 {
+    margin-bottom: 10px;
+  }
+  
+  .edit-section input {
+    display: block;
+    margin-bottom: 10px;
+    padding: 8px;
+    width: calc(100% - 16px); /* Full width minus padding */
+  }
+  
+  .edit-section button {
+    padding: 10px;
+  }
+
+  .edit-btn{
+    color: #01b4e4;
+  }
+  .edit-btn:hover{
+    color: #0d253f;
+  }
