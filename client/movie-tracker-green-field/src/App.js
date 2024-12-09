@@ -8,8 +8,9 @@ import PopularMovies from "./pages/PopularMovies";
 import Login from "./pages/Login";
 import UserPage from "./pages/User.page";
 import Register from "./pages/Register";
+import SearchedPeople from "./pages/SearchedPeople";
 
-const Profile = () => <h1>Your Profile Page</h1>;
+// const Profile = () => <h1>Your Profile Page</h1>;
 
 const App = () => {
   return (
@@ -29,7 +30,7 @@ const App = () => {
 
           {/* User Routes */}
           <Route path="/user-page" element={<UserPage />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/:userId" element={<SearchedPeople />} />
         </Routes>
       </Router>
     </div>

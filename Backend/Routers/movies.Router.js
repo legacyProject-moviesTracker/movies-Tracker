@@ -14,10 +14,10 @@ const {
 
 const router = express.Router();
 
-router.get("/", getAllMovies);
-router.get("/allFavoriteMovies", getFavoriteMovies);
+router.get("/:userId", getAllMovies);
+router.get("/allFavoriteMovies/:userId", getFavoriteMovies);
 router.post("/favorites", addFavoriteMovie);
-router.get("/allWatchedMovies", getWatchedMovies);
+router.get("/allWatchedMovies/:userId", getWatchedMovies);
 router.post("/watched", addMovieToWatched);
 router.patch("/deleteFavorite/:id", deleteFavoriteMovie);
 router.patch("/deleteWatchedMovie/:id", deleteWatchedMovie);

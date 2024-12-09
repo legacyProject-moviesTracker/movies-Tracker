@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserMovies from "../components/UserMovies";
 import Navbar from "../components/Navbar";
-import Comments from "../components/Comments";
 import { jwtDecode } from "jwt-decode"; // Fix incorrect import
 import "../assets/styles/Profile.css"; // Ensure you have Profile.css
 
@@ -13,17 +12,19 @@ const UserPage = () => {
   const [favoriteMovies, setFavoriteMovies] = useState([]);
   const [watchedMovies, setWatchedMovies] = useState([]);
   // lists visibilities
-  const [viewFavoriteList, setViewFavoriteList] = useState(false);
+  const [viewFavoriteList, setViewFavoriteList] = useState(true);
   const [viewWatchedList, setViewWatchedList] = useState(false);
-  const [viewAllMoviesList, setViewAllMoviesList] = useState(true);
+  // const [viewAllMoviesList, setViewAllMoviesList] = useState(true);
 
   const navigate = useNavigate();
 
+  const token = localStorage.getItem("token");
+  let decoded = jwtDecode(token);
+  // console.log(decoded);
   useEffect(() => {
     try {
-      const token = localStorage.getItem("token");
       if (token) {
-        const decoded = jwtDecode(token);
+        // decoded = jwtDecode(token);
         setUsername(decoded.username || "User");
         setIsAuthenticated(true);
         navigate("/user-page");
@@ -36,19 +37,30 @@ const UserPage = () => {
       setIsAuthenticated(false);
       navigate("/login"); // Redirect if token decoding fails
     }
-  }, [navigate]);
+  }, [navigate, decoded.username, token]);
 
   if (!isAuthenticated) {
     return <h1>Redirecting to Login...</h1>; // Show a placeholder while redirecting
   }
 
   return (
-    <div className="profile-container">
+    <div className="profile-container ">
       <Navbar />
-      <h1 className="welcome-message">Welcome, {username}!</h1>
-      <div className="profile-content">
-        <div className="favorites-section">
+      <div className="profile-content ">
+        <div className="favorites-section ">
+          <h1
+            className="welcome-message movie-page-header"
+            style={{
+              backgroundColor: "#947a4a",
+              padding: "0",
+              margin: "0",
+              paddingTop: "15px",
+            }}
+          >
+            Welcome, {username}!
+          </h1>
           <UserMovies
+            decoded={decoded}
             allMovies={allMovies}
             setAllMovies={setAllMovies}
             favoriteMovies={favoriteMovies}
@@ -59,12 +71,9 @@ const UserPage = () => {
             setViewFavoriteList={setViewFavoriteList}
             viewWatchedList={viewWatchedList}
             setViewWatchedList={setViewWatchedList}
-            viewAllMoviesList={viewAllMoviesList}
-            setViewAllMoviesList={setViewAllMoviesList}
+            // viewAllMoviesList={viewAllMoviesList}
+            // setViewAllMoviesList={setViewAllMoviesList}
           />
-        </div>
-        <div className="comments-section">
-          <Comments />
         </div>
       </div>
     </div>

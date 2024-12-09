@@ -7,9 +7,10 @@ const apiURL = `https://api.themoviedb.org/3/movie?api_key=${process.env.API_KEY
 
 // all favorite movies
 const getAllMovies = async (req, res) => {
+  const userId = req.params.userId;
   try {
-    const response = await Movie.find({});
-    console.log(response);
+    const response = await Movie.find({userId});
+    // console.log(response);
     // Send the response to the user
     res.status(200).json({
       message: "All movies fetched and stored successfully!",
@@ -44,9 +45,10 @@ const fetchMovieDetails = async (apiId) => {
 
 // all favorite movies
 const getFavoriteMovies = async (req, res) => {
+  const userId = req.params.userId;
   try {
-    const response = await Movie.find({ favorite: true });
-    console.log(response);
+    const response = await Movie.find({ userId, favorite: true });
+    // console.log(response);
     // Send the response to the user
     res.status(200).json({
       message: "Favorite movies fetched and stored successfully!",
@@ -61,9 +63,10 @@ const getFavoriteMovies = async (req, res) => {
 };
 // all watched movies
 const getWatchedMovies = async (req, res) => {
+  const userId = req.params.userId;
   try {
-    const response = await Movie.find({ watched: true });
-    console.log(response);
+    const response = await Movie.find({ userId, watched: true });
+    // console.log(response);
     // Send the response to the user
     res.status(200).json({
       message: "Watched movies fetched and stored successfully!",
@@ -117,6 +120,7 @@ const addFavoriteMovie = async (req, res) => {
       watched: false,
       comment: "",
       apiId,
+      userId,
     });
 
     await newMovie.save();
@@ -175,6 +179,7 @@ const addMovieToWatched = async (req, res) => {
       watched: true,
       comment: "",
       apiId,
+      userId,
     });
 
     await newMovie.save();
@@ -204,7 +209,7 @@ const deleteFavoriteMovie = async (req, res) => {
       { favorite: newValue },
       { new: true }
     );
-    console.log(movie);
+    // console.log(movie);
     if (!movie) {
       return res
         .status(404)
@@ -231,7 +236,7 @@ const deleteWatchedMovie = async (req, res) => {
       { watched: newValue },
       { new: true }
     );
-    console.log(movie);
+    // console.log(movie);
     if (!movie) {
       return res
         .status(404)
@@ -254,7 +259,7 @@ const deleteMovieFromList = async (req, res) => {
 
     // Find and delete the movie by ID
     const movie = await Movie.findByIdAndDelete(id, { new: true });
-    console.log(movie);
+    // console.log(movie);
     if (!movie) {
       return res
         .status(404)
@@ -276,7 +281,7 @@ const deleteMovieFromList = async (req, res) => {
 const deleteAllList = async (req, res) => {
   try {
     const result = await Movie.deleteMany();
-    console.log(result);
+    // console.log(result);
     if (result.deletedCount === 0) {
       return res
         .status(404)
