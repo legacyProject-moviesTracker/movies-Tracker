@@ -89,7 +89,7 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
   // const finPeople = () => {};
 
   return (
-    <nav className="navbar">
+    <nav className="navbar container-fluid px-5 shadow">
       <div className="navbar-logo">
         <span
           onClick={() => {

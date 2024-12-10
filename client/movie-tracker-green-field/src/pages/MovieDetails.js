@@ -133,7 +133,7 @@ const MovieDetails = ({ user }) => {
           color: "white",
         }}
       >
-        <div className="movie-header">
+        <div className="movie-header container">
           <div className="movie-poster">
             <img src={movie.posterUrl} alt={movie.title} />
           </div>
@@ -166,7 +166,7 @@ const MovieDetails = ({ user }) => {
         </div>
 
         {/* Related Movies Section */}
-        <div className="related-movies-container">
+        <div className="related-movies-container ">
           <h3 className="related-movies-title">Related Movies</h3>
           <ul className="related-movies-list">
             {relatedMovies.map((related, index) => (
