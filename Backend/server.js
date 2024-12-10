@@ -12,13 +12,13 @@ const port = 8080;
 // Middleware
 app.use(express.json());
 app.use(cors());
-// app.use(
-//   cors({
-//     origin: ["http://localhost:3000", "http://localhost:8080"], // Allow these origins
-//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow these methods
-//     credentials: true, // Allow cookies and headers like Authorization
-//   })
-// );
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "http://localhost:8080"], // Allow these origins
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow these methods
+    credentials: true, // Allow cookies and headers like Authorization
+  })
+);
 
 app.use("/user", userRoutes);
 app.use("/movies", movieRoutes);
