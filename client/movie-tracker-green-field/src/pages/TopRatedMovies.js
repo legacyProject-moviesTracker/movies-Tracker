@@ -9,6 +9,7 @@ const TopRatedMovies = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("My Profile");
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -31,7 +32,13 @@ const TopRatedMovies = () => {
 
   return (
     <>
-      <Navbar username={username} /> {/* Add Navbar */}
+      <Navbar
+        username={username}
+        setUsername={setUsername}
+        isLoggedIn={isLoggedIn}
+        setIsLoggedIn={setIsLoggedIn}
+      />{" "}
+      {/* Add Navbar */}
       <div className="movie-page-container">
         <h1 className="movie-page-header">Top Rated Movies</h1>
         <div className="movie-grid">

@@ -8,7 +8,7 @@ import "../assets/styles/Profile.css"; // Ensure you have Profile.css
 
 const SearchedPeople = () => {
   const { userId } = useParams();
-  //   const [username, setUsername] = useState("");
+  const [username, setUsername] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [selectedUser, setSelectedUser] = useState({});
 
@@ -21,7 +21,8 @@ const SearchedPeople = () => {
   const [viewWatchedList, setViewWatchedList] = useState(false);
 
   //
-  //   const [selectedUser, setSelectedUser] = useState({});
+
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   const navigate = useNavigate();
 
@@ -77,7 +78,12 @@ const SearchedPeople = () => {
   };
   return (
     <div className="profile-container">
-      <Navbar />
+      <Navbar
+        username={username}
+        setUsername={setUsername}
+        isLoggedIn={isLoggedIn}
+        setIsLoggedIn={setIsLoggedIn}
+      />
       <h1
         className="welcome-message movie-page-header"
         style={{

@@ -11,7 +11,7 @@ const moviesSchema = new mongoose.Schema({
   apiId: { type: String, unique: true, required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
-
+moviesSchema.index({ apiId: 1, userId: 1 }, { unique: true });
 const Movie = mongoose.model("Movie", moviesSchema);
 
 module.exports = Movie;

@@ -21,7 +21,10 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:8080/user/login", userData);
+      const res = await axios.post(
+        "http://localhost:8080/user/login",
+        userData
+      );
 
       if (res.data.token) {
         localStorage.setItem("token", res.data.token);

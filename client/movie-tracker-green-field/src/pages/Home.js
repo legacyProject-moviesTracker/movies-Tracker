@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import {jwtDecode} from "jwt-decode"; // Fix incorrect import
+import { jwtDecode } from "jwt-decode"; // Fix incorrect import
 import SearchBar from "../components/SearchBar";
 import MovieList from "../components/MovieList";
 import MovieCarousel from "../components/MovieCarousel";
@@ -18,7 +18,7 @@ const Home = () => {
   const [carouselMovies, setCarouselMovies] = useState([]);
   const [freeToWatchMovies, setFreeToWatchMovies] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
-  // const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [username, setUsername] = useState("My Profile");
   const navigate = useNavigate();
 
@@ -53,18 +53,14 @@ const Home = () => {
     }
   };
 
-  const handleLogout = () => {
-    // setIsLoggedIn(false);
-    setUsername("");
-  };
 
   return (
     <>
       <Navbar
-        // isLoggedIn={isLoggedIn}
-        
+        isLoggedIn={isLoggedIn}
+        setIsLoggedIn={setIsLoggedIn}
         username={username}
-        onLogout={handleLogout}
+        setUsername={setUsername}
       />
       <MovieCarousel movies={carouselMovies} />
       <SearchBar onSearch={handleSearch} />
